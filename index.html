@@ -178,7 +178,6 @@ a:hover { color: var(--accent); }
 
 <div class="cursor" id="customCursor"></div>
 
-
 <!-- Audio element -->
 <audio id="bgMusic" loop>
   <source src="https://files.catbox.moe/vjahkr.mp3" type="audio/mpeg">
@@ -247,15 +246,21 @@ document.addEventListener("mouseout", e => {
   }
 });
 
-// AUDIO PLAYBACK
+// AUDIO PLAYBACK: starts first time cursor moves 1px
 const music = document.getElementById("bgMusic");
-function playMusic() {
-  music.play().catch(err => console.log("Autoplay blocked:", err));
-  document.removeEventListener("click", playMusic);
-  document.removeEventListener("keydown", playMusic);
-}
-document.addEventListener("click", playMusic);
-document.addEventListener("keydown", playMusic);
+let audioStarted = false;
+let lastX = 0, lastY = 0;
+
+document.addEventListener("mousemove", e => {
+  if (!audioStarted) {
+    if (Math.abs(e.clientX - lastX) >= 1 || Math.abs(e.clientY - lastY) >= 1) {
+      music.play().catch(err => console.log("Autoplay blocked:", err));
+      audioStarted = true;
+    }
+  }
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
 </script>
 </body>
 </html>
