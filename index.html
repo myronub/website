@@ -28,8 +28,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
   overflow: hidden;
+  padding-bottom: 80px; /* space for player */
 }
 
 .container {
@@ -97,7 +99,7 @@ a:hover { color: var(--accent); }
 
 .btn:hover { border: solid 2px #819ab3; }
 
-/* === gif placement === */
+/* GIF */
 .gif-container {
   position: absolute;
   top: 50%;
@@ -115,7 +117,7 @@ a:hover { color: var(--accent); }
   pointer-events: none;
 }
 
-/* === custom cursor === */
+/* Custom Cursor */
 .cursor {
   position: fixed;
   top: 0;
@@ -135,13 +137,25 @@ a:hover { color: var(--accent); }
   width: 50px;
   height: 50px;
 }
+
+/* Minimalistic player */
+.player {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #111;
+  color: var(--accent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-style: italic;
+  z-index: 10;
+}
 </style>
 </head>
 <body>
-
-<audio autoplay loop>
-  <source src="https://files.catbox.moe/4nzg4d.mp3" type="audio/mpeg">
-</audio>
 
 <div class="container">
   <h1>myro</h1>
@@ -164,6 +178,16 @@ a:hover { color: var(--accent); }
 
 <div class="cursor" id="customCursor"></div>
 
+<!-- Minimalistic player -->
+<div class="player">
+  *пачка сигарет*
+</div>
+
+<!-- Audio element -->
+<audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/4nzg4d.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 // DRAGGABLE GIF
 const gif = document.getElementById("draggableGif");
@@ -175,7 +199,7 @@ let offsetX = 0, offsetY = 0;
 
 function animateGIF() {
   if (isDragging) {
-    gifX += (mouseX - offsetX - gifX) * 0.2; // easing
+    gifX += (mouseX - offsetX - gifX) * 0.2;
     gifY += (mouseY - offsetY - gifY) * 0.2;
     gif.style.left = gifX + "px";
     gif.style.top = gifY + "px";
@@ -207,7 +231,7 @@ document.addEventListener("mousemove", e => {
 });
 
 function animateCursor() {
-  cursorX += (targetX - cursorX) * 0.2; // smooth easing
+  cursorX += (targetX - cursorX) * 0.2;
   cursorY += (targetY - cursorY) * 0.2;
   cursor.style.left = cursorX + "px";
   cursor.style.top = cursorY + "px";
@@ -215,7 +239,7 @@ function animateCursor() {
 }
 animateCursor();
 
-// Grow cursor on text/link hover
+// Cursor growth on hover
 document.addEventListener("mouseover", e => {
   if (e.target.closest("p, a, .tooltip, .btn")) {
     cursor.classList.add("big");
@@ -226,6 +250,16 @@ document.addEventListener("mouseout", e => {
     cursor.classList.remove("big");
   }
 });
+
+// AUDIO PLAYBACK
+const music = document.getElementById("bgMusic");
+function playMusic() {
+  music.play().catch(err => console.log("Autoplay blocked:", err));
+  document.removeEventListener("click", playMusic);
+  document.removeEventListener("keydown", playMusic);
+}
+document.addEventListener("click", playMusic);
+document.addEventListener("keydown", playMusic);
 </script>
 </body>
 </html>
