@@ -126,14 +126,14 @@ a:hover { color: var(--accent); }
   pointer-events: none;
   transform: translate(-50%, -50%);
   background: white;
-  box-shadow: 0 0 10px white;
+  mix-blend-mode: difference; /* inverts color dynamically */
+  transition: width 0.2s ease, height 0.2s ease;
   z-index: 9999;
-  transition: background 0.2s, box-shadow 0.2s;
 }
 
-body[data-cursor-dark] .cursor {
-  background: black;
-  box-shadow: 0 0 10px black;
+.cursor.big {
+  width: 50px;
+  height: 50px;
 }
 </style>
 </head>
@@ -160,6 +160,7 @@ body[data-cursor-dark] .cursor {
 <div class="cursor" id="customCursor"></div>
 
 <script>
+// DRAGGABLE GIF
 const gif = document.getElementById("draggableGif");
 let isDragging = false;
 let mouseX = 0, mouseY = 0;
@@ -167,10 +168,9 @@ let gifX = gif.offsetLeft;
 let gifY = gif.offsetTop;
 let offsetX = 0, offsetY = 0;
 
-// Smooth drag using requestAnimationFrame
 function animate() {
   if (isDragging) {
-    gifX += (mouseX - offsetX - gifX) * 0.2; // easing factor 0.2
+    gifX += (mouseX - offsetX - gifX) * 0.2; // easing
     gifY += (mouseY - offsetY - gifY) * 0.2;
     gif.style.left = gifX + "px";
     gif.style.top = gifY + "px";
@@ -191,21 +191,23 @@ document.addEventListener("mousemove", e => {
   mouseY = e.clientY;
 });
 
-// Custom cursor
+// CUSTOM CURSOR
 const cursor = document.getElementById("customCursor");
 document.addEventListener("mousemove", e => {
   cursor.style.left = e.clientX + "px";
   cursor.style.top = e.clientY + "px";
 });
 
-// Change cursor color based on background lightness
-const lightElements = ["btn", "tooltip"];
-document.addEventListener("mousemove", e => {
-  let dark = false;
-  lightElements.forEach(cls => {
-    if (e.target.closest("." + cls)) dark = true;
-  });
-  document.body.dataset.cursorDark = dark ? "true" : "";
+// Grow cursor on text/link hover
+document.addEventListener("mouseover", e => {
+  if (e.target.closest("p, a, .tooltip, .btn")) {
+    cursor.classList.add("big");
+  }
+});
+document.addEventListener("mouseout", e => {
+  if (e.target.closest("p, a, .tooltip, .btn")) {
+    cursor.classList.remove("big");
+  }
 });
 </script>
 </body>
