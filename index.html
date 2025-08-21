@@ -33,6 +33,7 @@
     .container {
       max-width: 700px;
       transform: translate(-10em,-5em);
+      z-index: 1;
     }
 
     h1 {
@@ -68,6 +69,7 @@
     a:hover {
       color: var(--accent);
     }
+
     .tooltip {
       position: relative;
       display: inline-block;
@@ -104,8 +106,23 @@
       margin: 0;
       color: var(--accent);
     }
+
     .btn:hover {
       border: solid 2px #819ab3;
+    }
+
+    /* === new image placement === */
+    .gif-container {
+      position: absolute;
+      top: 50%;
+      right: 100px; /* 100px margin from right */
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .gif-container img {
+      max-width: 300px;
+      border-radius: 0.5em;
     }
   </style>
 </head>
@@ -124,13 +141,18 @@
 discord</a>
 
 or
-    
-
 </p><br>
 <p>
 <a class="btn" href="http://hope-shannon.gl.at.ply.gg:4479/">watchtube (check it out!)</a>
 <a class="btn" href="mailto:myro@waifu.club">email</a>
 </p>
   </div>
-<script data-cfasync="false" src="https://ajh.quest/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+
+  <!-- new gif div -->
+  <div class="gif-container">
+    <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif">
+  </div>
+
+<script data-cfasync="false" src="https://ajh.quest/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+</body>
 </html>
