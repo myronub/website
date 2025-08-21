@@ -267,5 +267,33 @@ function startMusic() {
 document.addEventListener("click", startMusic);
 document.addEventListener("keydown", startMusic);
 </script>
+<script>
+// Disable default context menu
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault(); // prevent default right-click menu
+
+    // Create custom popup
+    let popup = document.createElement("div");
+    popup.textContent = "hello bughunter ;)";
+    popup.style.position = "fixed";
+    popup.style.left = e.clientX + "px";
+    popup.style.top = e.clientY + "px";
+    popup.style.background = "#111";
+    popup.style.color = "#fff";
+    popup.style.padding = "0.5em 1em";
+    popup.style.border = "1px solid #fff";
+    popup.style.borderRadius = "5px";
+    popup.style.zIndex = 9999;
+    popup.style.fontFamily = "Arial, sans-serif";
+    popup.style.fontSize = "0.9rem";
+    popup.style.boxShadow = "0 0 10px rgba(255,255,255,0.2)";
+
+    document.body.appendChild(popup);
+
+    // Remove popup after 1.5 seconds
+    setTimeout(() => popup.remove(), 1500);
+});
+</script>
+
 </body>
 </html>
