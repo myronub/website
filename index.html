@@ -120,24 +120,29 @@ a:hover { color: var(--accent); }
   position: fixed;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
   background: white;
-  mix-blend-mode: difference; /* inverts color dynamically */
+  mix-blend-mode: difference;
   transition: width 0.2s ease, height 0.2s ease;
   z-index: 9999;
 }
 
 .cursor.big {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
 }
 </style>
 </head>
 <body>
+
+<audio autoplay loop>
+  <source src="https://files.catbox.moe/4nzg4d.mp3" type="audio/mpeg">
+</audio>
+
 <div class="container">
   <h1>myro</h1>
   <p>casual gamer and soon coder @ 
@@ -168,16 +173,16 @@ let gifX = gif.offsetLeft;
 let gifY = gif.offsetTop;
 let offsetX = 0, offsetY = 0;
 
-function animate() {
+function animateGIF() {
   if (isDragging) {
     gifX += (mouseX - offsetX - gifX) * 0.2; // easing
     gifY += (mouseY - offsetY - gifY) * 0.2;
     gif.style.left = gifX + "px";
     gif.style.top = gifY + "px";
   }
-  requestAnimationFrame(animate);
+  requestAnimationFrame(animateGIF);
 }
-animate();
+animateGIF();
 
 gif.addEventListener("mousedown", e => {
   isDragging = true;
@@ -191,12 +196,24 @@ document.addEventListener("mousemove", e => {
   mouseY = e.clientY;
 });
 
-// CUSTOM CURSOR
+// SMOOTH CUSTOM CURSOR
 const cursor = document.getElementById("customCursor");
+let cursorX = 0, cursorY = 0;
+let targetX = 0, targetY = 0;
+
 document.addEventListener("mousemove", e => {
-  cursor.style.left = e.clientX + "px";
-  cursor.style.top = e.clientY + "px";
+  targetX = e.clientX;
+  targetY = e.clientY;
 });
+
+function animateCursor() {
+  cursorX += (targetX - cursorX) * 0.2; // smooth easing
+  cursorY += (targetY - cursorY) * 0.2;
+  cursor.style.left = cursorX + "px";
+  cursor.style.top = cursorY + "px";
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
 
 // Grow cursor on text/link hover
 document.addEventListener("mouseover", e => {
