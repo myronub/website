@@ -1,191 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>myro</title>
-  <style>
-    :root {
-      --bg: #000;
-      --text: #fff;
-      --accent: #d8d8d8;
-      --accent2: #181818;
-      --accent3: #45484c;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>myro</title>
+<style>
+:root {
+  --bg: #000;
+  --text: #fff;
+  --accent: #d8d8d8;
+  --accent2: #181818;
+  --accent3: #45484c;
+}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Arial', sans-serif;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  cursor: none; /* hide default cursor */
+}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
 
-    .container {
-      max-width: 700px;
-      transform: translate(-10em,-5em);
-      z-index: 1;
-    }
+.container {
+  max-width: 700px;
+  transform: translate(-10em,-5em);
+  z-index: 1;
+}
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      animation: fadeIn 1s ease-in-out forwards;
-    }
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: fadeIn 1s ease-in-out forwards;
+}
 
-    p {
-      color: var(--accent);
-      font-size: 1.1rem;
-      animation: fadeIn 1.5s ease-in-out forwards;
-      animation-delay: 0.3s;
-      opacity: 0;
-    }
+p {
+  color: var(--accent);
+  font-size: 1.1rem;
+  animation: fadeIn 1.5s ease-in-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    a {
-      color: var(--text);
-      text-decoration: none;
-    }
+a { color: var(--text); text-decoration: none; }
+a:hover { color: var(--accent); }
 
-    a:hover {
-      color: var(--accent);
-    }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: #819ab3;
+  text-decoration: none;
+}
 
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-      color: #819ab3;
-      text-decoration: none;
-    }
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #080808;
+  color: #fff;
+  padding: 0.5em;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 0.9em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease-in-out;
+}
 
-    .tooltip::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #080808;
-      color: #fff;
-      padding: 0.5em;
-      border-radius: 4px;
-      white-space: nowrap;
-      font-size: 0.9em;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.1s ease-in-out;
-    }
+.tooltip:hover::after { opacity: 1; }
 
-    .tooltip:hover::after {
-      opacity: 1;
-    }
+.btn {
+  padding: 0.5em 2em;
+  border: solid 2px var(--accent2);
+  border-radius: 0.5em;
+  margin: 0;
+  color: var(--accent);
+}
 
-    .btn {
-      padding: 0.5em 2em;
-      border: solid 2px var(--accent2);
-      border-radius: 0.5em;
-      margin: 0;
-      color: var(--accent);
-    }
+.btn:hover { border: solid 2px #819ab3; }
 
-    .btn:hover {
-      border: solid 2px #819ab3;
-    }
+/* === gif placement === */
+.gif-container {
+  position: absolute;
+  top: 50%;
+  right: 100px;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: auto;
+}
 
-    /* === gif placement === */
-    .gif-container {
-      position: absolute;
-      top: 50%;
-      right: 100px;
-      transform: translateY(-50%);
-      z-index: 2;
-      cursor: grab;
-    }
+.gif-container img {
+  max-width: 300px;
+  border-radius: 0.5em;
+  user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
 
-    .gif-container:active {
-      cursor: grabbing;
-    }
+/* === custom cursor === */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: white;
+  box-shadow: 0 0 10px white;
+  z-index: 9999;
+  transition: background 0.2s, box-shadow 0.2s;
+}
 
-    .gif-container img {
-      max-width: 300px;
-      border-radius: 0.5em;
-      user-drag: none;
-      user-select: none;
-      pointer-events: none;
-    }
-  </style>
+body[data-cursor-dark] .cursor {
+  background: black;
+  box-shadow: 0 0 10px black;
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>myro</h1>
-    <p>casual gamer and soon coder @ <a href="https://github.com/myronub"
-      class="tooltip" 
-      data-tooltip="@myronub" 
-      target="_blank">
-      [github]</a>
+<div class="container">
+  <h1>myro</h1>
+  <p>casual gamer and soon coder @ 
+    <a href="https://github.com/myronub" class="tooltip" data-tooltip="@myronub" target="_blank">[github]</a>
   </p>
-    <p>reach out at
-        
-<a href="https://discord.com/users/1405979887411662939" class="tooltip" data-tooltip="@cupidtakeme / @myronub" target="_blank">
-discord</a>
+  <p>reach out at
+    <a href="https://discord.com/users/1405979887411662939" class="tooltip" data-tooltip="@cupidtakeme / @myronub" target="_blank">discord</a>
+  or
+  </p><br>
+  <p>
+    <a class="btn" href="http://hope-shannon.gl.at.ply.gg:4479/">watchtube (check it out!)</a>
+    <a class="btn" href="mailto:myro@waifu.club">email</a>
+  </p>
+</div>
 
-or
-</p><br>
-<p>
-<a class="btn" href="http://hope-shannon.gl.at.ply.gg:4479/">watchtube (check it out!)</a>
-<a class="btn" href="mailto:myro@waifu.club">email</a>
-</p>
-  </div>
+<div class="gif-container" id="draggableGif">
+  <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif" draggable="false">
+</div>
 
-  <!-- new gif div -->
-  <div class="gif-container" id="draggableGif">
-    <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif" draggable="false">
-  </div>
+<div class="cursor" id="customCursor"></div>
 
 <script>
-  const gif = document.getElementById("draggableGif");
+const gif = document.getElementById("draggableGif");
+let isDragging = false;
+let mouseX = 0, mouseY = 0;
+let gifX = gif.offsetLeft;
+let gifY = gif.offsetTop;
+let offsetX = 0, offsetY = 0;
 
-  let isDragging = false;
-  let offsetX = 0, offsetY = 0;
+// Smooth drag using requestAnimationFrame
+function animate() {
+  if (isDragging) {
+    gifX += (mouseX - offsetX - gifX) * 0.2; // easing factor 0.2
+    gifY += (mouseY - offsetY - gifY) * 0.2;
+    gif.style.left = gifX + "px";
+    gif.style.top = gifY + "px";
+  }
+  requestAnimationFrame(animate);
+}
+animate();
 
-  gif.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    const rect = gif.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    gif.style.position = "absolute";
+gif.addEventListener("mousedown", e => {
+  isDragging = true;
+  offsetX = e.clientX - gif.offsetLeft;
+  offsetY = e.clientY - gif.offsetTop;
+});
+
+document.addEventListener("mouseup", () => { isDragging = false; });
+document.addEventListener("mousemove", e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// Custom cursor
+const cursor = document.getElementById("customCursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+
+// Change cursor color based on background lightness
+const lightElements = ["btn", "tooltip"];
+document.addEventListener("mousemove", e => {
+  let dark = false;
+  lightElements.forEach(cls => {
+    if (e.target.closest("." + cls)) dark = true;
   });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      gif.style.left = `${e.clientX - offsetX}px`;
-      gif.style.top = `${e.clientY - offsetY}px`;
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
+  document.body.dataset.cursorDark = dark ? "true" : "";
+});
 </script>
 </body>
 </html>
