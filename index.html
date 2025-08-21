@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>myro</title>
+  <style>
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --accent: #d8d8d8;
+      --accent2: #181818;
+      --accent3: #45484c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      transform: translate(-10em,-5em);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    p {
+      color: var(--accent);
+      font-size: 1.1rem;
+      animation: fadeIn 1.5s ease-in-out forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent);
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      color: #819ab3;
+      text-decoration: none;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #080808;
+      color: #fff;
+      padding: 0.5em;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-size: 0.9em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s ease-in-out;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+    }
+
+    .btn {
+      padding: 0.5em 2em;
+      border: solid 2px var(--accent2);
+      border-radius: 0.5em;
+      margin: 0;
+      color: var(--accent);
+    }
+    .btn:hover {
+      border: solid 2px #819ab3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>myro</h1>
+    <p>casual gamer and cool person<a href="https://github.com/myronub"
+      class="tooltip" 
+      data-tooltip="@myronub" 
+      target="_blank">
+      [github]</a>
+  </p>
+    <p>reach out at
+        
+<a href="https://discord.com/users/1405979887411662939" class="tooltip" data-tooltip="https://discord.com/users/1405979887411662939" target="_blank">
+discord</a>
+
+or
+    
+
+</p><br>
+<p>
+<a class="btn" href="http://hope-shannon.gl.at.ply.gg:4479/">watchtube (check it out!)</a>
+<a class="btn" href="mailto:myro@waifu.club">email</a>
+</p>
+  </div>
+<script data-cfasync="false" src="https://ajh.quest/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>
