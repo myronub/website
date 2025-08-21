@@ -28,6 +28,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
 
     .container {
@@ -111,18 +112,26 @@
       border: solid 2px #819ab3;
     }
 
-    /* === new image placement === */
+    /* === gif placement === */
     .gif-container {
       position: absolute;
       top: 50%;
-      right: 100px; /* 100px margin from right */
+      right: 100px;
       transform: translateY(-50%);
-      z-index: 0;
+      z-index: 2;
+      cursor: grab;
+    }
+
+    .gif-container:active {
+      cursor: grabbing;
     }
 
     .gif-container img {
       max-width: 300px;
       border-radius: 0.5em;
+      user-drag: none;
+      user-select: none;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -149,10 +158,34 @@ or
   </div>
 
   <!-- new gif div -->
-  <div class="gif-container">
-    <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif">
+  <div class="gif-container" id="draggableGif">
+    <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif" draggable="false">
   </div>
 
-<script data-cfasync="false" src="https://ajh.quest/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+  const gif = document.getElementById("draggableGif");
+
+  let isDragging = false;
+  let offsetX = 0, offsetY = 0;
+
+  gif.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    const rect = gif.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    gif.style.position = "absolute";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      gif.style.left = `${e.clientX - offsetX}px`;
+      gif.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+</script>
 </body>
 </html>
