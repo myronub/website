@@ -268,9 +268,16 @@ document.addEventListener("click", startMusic);
 document.addEventListener("keydown", startMusic);
 </script>
 <script>
-// Disable default context menu
+let currentPopup = null;
+
 document.addEventListener("contextmenu", function(e) {
     e.preventDefault(); // prevent default right-click menu
+
+    // Remove old popup if it exists
+    if (currentPopup) {
+        currentPopup.remove();
+        currentPopup = null;
+    }
 
     // Create custom popup
     let popup = document.createElement("div");
@@ -287,13 +294,21 @@ document.addEventListener("contextmenu", function(e) {
     popup.style.fontFamily = "Arial, sans-serif";
     popup.style.fontSize = "0.9rem";
     popup.style.boxShadow = "0 0 10px rgba(255,255,255,0.2)";
+    popup.style.opacity = "1";
+    popup.style.transition = "opacity 0.5s ease";
 
     document.body.appendChild(popup);
+    currentPopup = popup;
 
-    // Remove popup after 1.5 seconds
-    setTimeout(() => popup.remove(), 1500);
+    // Fade out and remove after 1.5 seconds
+    setTimeout(() => {
+        popup.style.opacity = "0";
+        setTimeout(() => {
+            popup.remove();
+            if (currentPopup === popup) currentPopup = null;
+        }, 500); // match transition duration
+    }, 1500);
 });
 </script>
-
 </body>
 </html>
