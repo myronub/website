@@ -3,13 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" href="/favicon.ico" type="image/x-icon" />
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://rawcdn.githack.com/lafeber/world-flags-sprite/master/flags16.css"
-/>
 <title>myro</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
 <style>
 :root {
   --bg: #000;
@@ -109,7 +104,7 @@ a:hover { color: var(--accent); }
 .gif-container {
   position: absolute;
   top: 50%;
-  right: 200px;
+  right: 100px;
   transform: translateY(-50%);
   z-index: 2;
   pointer-events: auto;
@@ -138,11 +133,7 @@ a:hover { color: var(--accent); }
   transition: width 0.2s ease, height 0.2s ease;
   z-index: 9999;
 }
-
-.cursor.big {
-  width: 50px;
-  height: 50px;
-}
+.cursor.big { width: 50px; height: 50px; }
 
 /* Minimalistic player */
 .player {
@@ -159,23 +150,50 @@ a:hover { color: var(--accent); }
   font-style: italic;
   z-index: 10;
 }
+
+/* Visualizer */
+#visualizer {
+  position: fixed;
+  bottom: 300px;        /* <-- your requested offset */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;         /* CSS size; JS will scale for crispness */
+  height: 60px;
+  pointer-events: none; /* don't block clicks */
+  opacity: 0.9;
+  z-index: 9;
+  filter: drop-shadow(0 2px 8px rgba(255,255,255,0.07));
+}
+
+/* Right-click popup (custom context) */
+.context-pop {
+  position: fixed;
+  background: #111;
+  color: #fff;
+  padding: 0.5em 1em;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  z-index: 9998;
+  font-size: 0.9rem;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.context-pop.fade { opacity: 0; }
 </style>
 </head>
 <body>
 
 <div class="container">
   <h1>myro</h1>
-<p>
-  casual gamer from 
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Finland.png" 
-       alt="Finland flag" 
-       style="height:0.9em; vertical-align:middle; margin:0 0.3em; border-radius:3px;">
- and soon coder @ 
-  <a href="https://github.com/myronub" class="tooltip" data-tooltip="@myronub" target="_blank">[github]</a>
-</p>
-
-
-
+  <p>
+    casual gamer from
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Finland.png"
+         alt="Finland flag"
+         style="height:0.9em; vertical-align:middle; margin:0 0.3em; border-radius:3px;">
+    Finland and soon coder @
+    <a href="https://github.com/myronub" class="tooltip" data-tooltip="@myronub" target="_blank">[github]</a>
+  </p>
   <p>reach out at
     <a href="https://discord.com/users/1405979887411662939" class="tooltip" data-tooltip="@cupidtakeme / @myronub" target="_blank">discord</a>
   or
@@ -190,9 +208,15 @@ a:hover { color: var(--accent); }
   <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif" draggable="false">
 </div>
 
+<!-- Small visualizer -->
+<canvas id="visualizer"></canvas>
+
 <div class="cursor" id="customCursor"></div>
 
-
+<!-- Minimalistic player -->
+<div class="player">
+  *пачка сигарет*
+</div>
 
 <!-- Audio element -->
 <audio id="bgMusic" loop>
@@ -200,10 +224,9 @@ a:hover { color: var(--accent); }
 </audio>
 
 <script>
-// DRAGGABLE GIF
+// ===== DRAGGABLE GIF =====
 const gif = document.getElementById("draggableGif");
-let isDragging = false;
-let mouseX = 0, mouseY = 0;
+let isDragging = false, mouseX = 0, mouseY = 0;
 let gifX = gif.offsetLeft, gifY = gif.offsetTop;
 let offsetX = 0, offsetY = 0;
 
@@ -226,10 +249,9 @@ gif.addEventListener("mousedown", e => {
 document.addEventListener("mouseup", () => { isDragging = false; });
 document.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
 
-// SMOOTH CUSTOM CURSOR
+// ===== SMOOTH CUSTOM CURSOR =====
 const cursor = document.getElementById("customCursor");
-let cursorX = 0, cursorY = 0;
-let targetX = 0, targetY = 0;
+let cursorX = 0, cursorY = 0, targetX = 0, targetY = 0;
 
 document.addEventListener("mousemove", e => {
   targetX = e.clientX;
@@ -245,7 +267,6 @@ function animateCursor() {
 }
 animateCursor();
 
-// Cursor growth on hover
 document.addEventListener("mouseover", e => {
   if (e.target.closest("p, a, .tooltip, .btn")) cursor.classList.add("big");
 });
@@ -253,61 +274,115 @@ document.addEventListener("mouseout", e => {
   if (e.target.closest("p, a, .tooltip, .btn")) cursor.classList.remove("big");
 });
 
-// AUDIO PLAYBACK: starts on first interaction
+// ===== AUDIO: start on first interaction =====
 const music = document.getElementById("bgMusic");
 let audioStarted = false;
 function startMusic() {
   if (!audioStarted) {
     music.play().catch(err => console.log("Autoplay blocked:", err));
     audioStarted = true;
+    initVisualizer(); // start visualizer at the same time
     document.removeEventListener("click", startMusic);
     document.removeEventListener("keydown", startMusic);
   }
 }
 document.addEventListener("click", startMusic);
 document.addEventListener("keydown", startMusic);
-</script>
-<script>
-let currentPopup = null;
 
-document.addEventListener("contextmenu", function(e) {
-    e.preventDefault(); // prevent default right-click menu
+// ===== SMALL VISUALIZER (Web Audio API) =====
+let audioCtx, analyser, srcNode, vizStarted = false;
+const canvas = document.getElementById('visualizer');
+const ctx = canvas.getContext('2d');
 
-    // Remove old popup if it exists
-    if (currentPopup) {
-        currentPopup.remove();
-        currentPopup = null;
+function sizeCanvasForDPR() {
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale drawing to CSS pixels
+}
+sizeCanvasForDPR();
+window.addEventListener('resize', sizeCanvasForDPR);
+
+function initVisualizer() {
+  if (vizStarted) return;
+  vizStarted = true;
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 512; // small, responsive
+  analyser.smoothingTimeConstant = 0.85;
+
+  srcNode = audioCtx.createMediaElementSource(music);
+  srcNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  drawViz();
+}
+
+function drawViz() {
+  const bufferLength = analyser.frequencyBinCount; // 256
+  const dataArray = new Uint8Array(bufferLength);
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+
+  function render() {
+    analyser.getByteFrequencyData(dataArray);
+
+    ctx.clearRect(0, 0, W, H);
+
+    const barCount = 48; // compact
+    const step = Math.floor(bufferLength / barCount);
+    const barWidth = (W / barCount) * 0.8;
+    const gap = (W / barCount) * 0.2;
+    const baseline = H - 2;
+
+    for (let i = 0; i < barCount; i++) {
+      const v = dataArray[i * step] / 255;     // 0..1
+      const barHeight = Math.max(2, v * (H - 6));
+      const x = i * (barWidth + gap);
+      const y = baseline - barHeight;
+
+      // draw minimal white bars with slight transparency
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fillRect(x, y, barWidth, barHeight);
+
+      // subtle top cap
+      ctx.fillStyle = 'rgba(255,255,255,1)';
+      ctx.fillRect(x, y - 1, barWidth, 2);
     }
 
-    // Create custom popup
-    let popup = document.createElement("div");
-    popup.textContent = "hello bughunter ;)";
-    popup.style.position = "fixed";
-    popup.style.left = e.clientX + "px";
-    popup.style.top = e.clientY + "px";
-    popup.style.background = "#111";
-    popup.style.color = "#fff";
-    popup.style.padding = "0.5em 1em";
-    popup.style.border = "1px solid #fff";
-    popup.style.borderRadius = "5px";
-    popup.style.zIndex = 9999;
-    popup.style.fontFamily = "Arial, sans-serif";
-    popup.style.fontSize = "0.9rem";
-    popup.style.boxShadow = "0 0 10px rgba(255,255,255,0.2)";
-    popup.style.opacity = "1";
-    popup.style.transition = "opacity 0.5s ease";
+    requestAnimationFrame(render);
+  }
+  render();
+}
 
-    document.body.appendChild(popup);
-    currentPopup = popup;
+// ===== Custom right-click popup with fade + single instance =====
+let currentPopup = null;
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
 
-    // Fade out and remove after 1.5 seconds
+  if (currentPopup) {
+    currentPopup.remove();
+    currentPopup = null;
+  }
+
+  const pop = document.createElement('div');
+  pop.className = 'context-pop';
+  pop.textContent = 'hello bughunter ;)';
+  pop.style.left = e.clientX + 'px';
+  pop.style.top = e.clientY + 'px';
+  document.body.appendChild(pop);
+  currentPopup = pop;
+
+  // fade out then remove
+  setTimeout(() => {
+    pop.classList.add('fade');
     setTimeout(() => {
-        popup.style.opacity = "0";
-        setTimeout(() => {
-            popup.remove();
-            if (currentPopup === popup) currentPopup = null;
-        }, 500); // match transition duration
-    }, 1500);
+      if (currentPopup === pop) currentPopup = null;
+      pop.remove();
+    }, 500);
+  }, 1500);
 });
 </script>
 </body>
