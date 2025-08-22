@@ -43,14 +43,33 @@ body {
 .gradient-glow {
   font-size: 3rem;
   margin-bottom: 1rem;
-  background: linear-gradient(270deg, #5ca7ff, #b388ff, #5ca7ff);
+  background: linear-gradient(270deg, #0011ff, #00aaff, #0011ff);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
-  animation: gradientMove 6s ease infinite, fadeIn 1s ease-in-out forwards, glowPulse 2s ease-in-out infinite;
-  text-shadow: 0 0 8px rgba(92, 167, 255, 0.6), 0 0 15px rgba(179, 136, 255, 0.5);
+  animation: gradientMove 6s ease infinite, fadeIn 1s ease-in-out forwards;
+  position: relative;
+}
+
+/* glowing aura */
+.gradient-glow::after {
+  content: "myro";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(270deg, #0011ff, #00aaff, #0011ff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(12px);
+  animation: gradientMove 6s ease infinite;
+  z-index: -1;
+  opacity: 0.8;
 }
 
 @keyframes gradientMove {
@@ -59,11 +78,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-@keyframes glowPulse {
-  0% { text-shadow: 0 0 8px rgba(92, 167, 255, 0.6), 0 0 15px rgba(179, 136, 255, 0.5); }
-  50% { text-shadow: 0 0 20px rgba(92, 167, 255, 1), 0 0 35px rgba(179, 136, 255, 0.9); }
-  100% { text-shadow: 0 0 8px rgba(92, 167, 255, 0.6), 0 0 15px rgba(179, 136, 255, 0.5); }
-}
 
 
 .container {
