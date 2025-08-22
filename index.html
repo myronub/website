@@ -40,6 +40,24 @@ body {
   padding-bottom: 80px; /* space for player */
 }
 
+.gradient-name {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(270deg, #5ca7ff, #b388ff, #5ca7ff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientMove 6s ease infinite, fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .container {
   max-width: 700px;
   transform: translate(-10em,-5em);
@@ -164,7 +182,8 @@ a:hover { color: var(--accent); }
 <body>
 
 <div class="container">
-  <h1>myro</h1>
+  <h1 class="gradient-name">myro</h1>
+
 <p>
   casual gamer from 
   <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Finland.png" 
