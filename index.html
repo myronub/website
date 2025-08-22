@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>myro</title>
-<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 <style>
 :root {
   --bg: #000;
@@ -19,7 +19,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  cursor: none; /* hide default cursor */
+  cursor: none;
 }
 
 body {
@@ -32,7 +32,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   overflow: hidden;
-  padding-bottom: 80px; /* space for player */
+  padding-bottom: 380px; /* space for player + visualizer */
 }
 
 .container {
@@ -97,7 +97,6 @@ a:hover { color: var(--accent); }
   margin: 0;
   color: var(--accent);
 }
-
 .btn:hover { border: solid 2px #819ab3; }
 
 /* GIF */
@@ -135,7 +134,7 @@ a:hover { color: var(--accent); }
 }
 .cursor.big { width: 50px; height: 50px; }
 
-/* Minimalistic player */
+/* Player */
 .player {
   position: fixed;
   bottom: 0;
@@ -154,32 +153,12 @@ a:hover { color: var(--accent); }
 /* Visualizer */
 #visualizer {
   position: fixed;
-  bottom: 300px;        /* <-- your requested offset */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 320px;         /* CSS size; JS will scale for crispness */
-  height: 60px;
-  pointer-events: none; /* don't block clicks */
-  opacity: 0.9;
-  z-index: 9;
-  filter: drop-shadow(0 2px 8px rgba(255,255,255,0.07));
+  bottom: 40px; /* sits above player */
+  left: 0;
+  width: 100%;
+  height: 300px;
+  z-index: 5;
 }
-
-/* Right-click popup (custom context) */
-.context-pop {
-  position: fixed;
-  background: #111;
-  color: #fff;
-  padding: 0.5em 1em;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  z-index: 9998;
-  font-size: 0.9rem;
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-.context-pop.fade { opacity: 0; }
 </style>
 </head>
 <body>
@@ -187,11 +166,11 @@ a:hover { color: var(--accent); }
 <div class="container">
   <h1>myro</h1>
   <p>
-    casual gamer from
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Finland.png"
-         alt="where do you fucking think"
+    casual gamer from 
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Finland.png" 
+         alt="Finland flag" 
          style="height:0.9em; vertical-align:middle; margin:0 0.3em; border-radius:3px;">
-    and soon coder @
+    Finland and soon coder @ 
     <a href="https://github.com/myronub" class="tooltip" data-tooltip="@myronub" target="_blank">[github]</a>
   </p>
   <p>reach out at
@@ -208,26 +187,26 @@ a:hover { color: var(--accent); }
   <img src="https://i.pinimg.com/originals/35/d9/f6/35d9f643067bdbc5e7e98e3445d834c5.gif" alt="decorative gif" draggable="false">
 </div>
 
-<!-- Small visualizer -->
-<canvas id="visualizer"></canvas>
-
 <div class="cursor" id="customCursor"></div>
 
-<!-- Minimalistic player -->
-<div class="player">
-  *пачка сигарет*
-</div>
+<!-- Visualizer -->
+<canvas id="visualizer"></canvas>
 
-<!-- Audio element -->
+<!-- Audio -->
 <audio id="bgMusic" loop>
   <source src="https://files.catbox.moe/vjahkr.mp3" type="audio/mpeg">
 </audio>
 
+<!-- Player -->
+<div class="player">пачка сигарет</div>
+
 <script>
-// ===== DRAGGABLE GIF =====
+// DRAGGABLE GIF
 const gif = document.getElementById("draggableGif");
-let isDragging = false, mouseX = 0, mouseY = 0;
-let gifX = gif.offsetLeft, gifY = gif.offsetTop;
+let isDragging = false;
+let mouseX = 0, mouseY = 0;
+let gifX = gif.offsetLeft;
+let gifY = gif.offsetTop;
 let offsetX = 0, offsetY = 0;
 
 function animateGIF() {
@@ -249,9 +228,10 @@ gif.addEventListener("mousedown", e => {
 document.addEventListener("mouseup", () => { isDragging = false; });
 document.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
 
-// ===== SMOOTH CUSTOM CURSOR =====
+// CUSTOM CURSOR
 const cursor = document.getElementById("customCursor");
-let cursorX = 0, cursorY = 0, targetX = 0, targetY = 0;
+let cursorX = 0, cursorY = 0;
+let targetX = 0, targetY = 0;
 
 document.addEventListener("mousemove", e => {
   targetX = e.clientX;
@@ -274,35 +254,9 @@ document.addEventListener("mouseout", e => {
   if (e.target.closest("p, a, .tooltip, .btn")) cursor.classList.remove("big");
 });
 
-// ===== AUDIO: start on first interaction =====
+// AUDIO + VISUALIZER
 const music = document.getElementById("bgMusic");
-let audioStarted = false;
-function startMusic() {
-  if (!audioStarted) {
-    music.play().catch(err => console.log("Autoplay blocked:", err));
-    audioStarted = true;
-    initVisualizer(); // start visualizer at the same time
-    document.removeEventListener("click", startMusic);
-    document.removeEventListener("keydown", startMusic);
-  }
-}
-document.addEventListener("click", startMusic);
-document.addEventListener("keydown", startMusic);
-
-// ===== SMALL VISUALIZER (Web Audio API) =====
 let audioCtx, analyser, srcNode, vizStarted = false;
-const canvas = document.getElementById('visualizer');
-const ctx = canvas.getContext('2d');
-
-function sizeCanvasForDPR() {
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = Math.round(rect.width * dpr);
-  canvas.height = Math.round(rect.height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale drawing to CSS pixels
-}
-sizeCanvasForDPR();
-window.addEventListener('resize', sizeCanvasForDPR);
 
 function initVisualizer() {
   if (vizStarted) return;
@@ -310,80 +264,55 @@ function initVisualizer() {
 
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 512; // small, responsive
+  analyser.fftSize = 512;
   analyser.smoothingTimeConstant = 0.85;
 
   srcNode = audioCtx.createMediaElementSource(music);
   srcNode.connect(analyser);
-  // no need to connect analyser to destination nigguh
 
   drawViz();
 }
 
 function drawViz() {
-  const bufferLength = analyser.frequencyBinCount; // 256
-  const dataArray = new Uint8Array(bufferLength);
-  const W = canvas.clientWidth;
-  const H = canvas.clientHeight;
+  const canvas = document.getElementById("visualizer");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = 300;
 
-  function render() {
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  function draw() {
+    requestAnimationFrame(draw);
     analyser.getByteFrequencyData(dataArray);
 
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const barCount = 48; // compact
-    const step = Math.floor(bufferLength / barCount);
-    const barWidth = (W / barCount) * 0.8;
-    const gap = (W / barCount) * 0.2;
-    const baseline = H - 2;
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
 
-    for (let i = 0; i < barCount; i++) {
-      const v = dataArray[i * step] / 255;     // 0..1
-      const barHeight = Math.max(2, v * (H - 6));
-      const x = i * (barWidth + gap);
-      const y = baseline - barHeight;
-
-      // draw minimal white bars with slight transparency
-      ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx.fillRect(x, y, barWidth, barHeight);
-
-      // subtle top cap
-      ctx.fillStyle = 'rgba(255,255,255,1)';
-      ctx.fillRect(x, y - 1, barWidth, 2);
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = dataArray[i] / 2;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+      x += barWidth + 1;
     }
-
-    requestAnimationFrame(render);
   }
-  render();
+  draw();
 }
 
-// ===== Custom right-click popup with fade + single instance =====
-let currentPopup = null;
-document.addEventListener("contextmenu", function(e) {
-  e.preventDefault();
+// User gesture required
+function startMusic() {
+  music.play().then(() => {
+    if (audioCtx) audioCtx.resume();
+    initVisualizer();
+  }).catch(err => console.log("Blocked:", err));
 
-  if (currentPopup) {
-    currentPopup.remove();
-    currentPopup = null;
-  }
-
-  const pop = document.createElement('div');
-  pop.className = 'context-pop';
-  pop.textContent = 'hello bughunter ;)';
-  pop.style.left = e.clientX + 'px';
-  pop.style.top = e.clientY + 'px';
-  document.body.appendChild(pop);
-  currentPopup = pop;
-
-  // fade out then remove
-  setTimeout(() => {
-    pop.classList.add('fade');
-    setTimeout(() => {
-      if (currentPopup === pop) currentPopup = null;
-      pop.remove();
-    }, 500);
-  }, 1500);
-});
+  document.removeEventListener("click", startMusic);
+  document.removeEventListener("keydown", startMusic);
+}
+document.addEventListener("click", startMusic);
+document.addEventListener("keydown", startMusic);
 </script>
 </body>
 </html>
