@@ -315,7 +315,7 @@ function initVisualizer() {
 
   srcNode = audioCtx.createMediaElementSource(music);
   srcNode.connect(analyser);
-  analyser.connect(audioCtx.destination);
+  // no need to connect analyser to destination nigguh
 
   drawViz();
 }
