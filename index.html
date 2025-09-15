@@ -5,181 +5,131 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>lwcus</title>
 <style>
-  /* ===== Global ===== */
   :root{
-    --bg-deep:#04060a;
-    --layer1:#051426; /* darkest */
-    --layer2:#07283a;
-    --layer3:#003f6b;
-    --layer4:#006aa6;
-    --accent:#00c6ff; /* site accent */
-    --muted:#9ea7b3;
+    --bg-deep:#02040a;
+    --layer1:#02101a; /* darker */
+    --layer2:#032233;
+    --layer3:#003956;
+    --layer4:#005a89;
+    --accent:#00c6ff;
+    --muted:#8f99a3;
   }
+
   html,body{
-    height:100%;
-    margin:0;
-    background:var(--bg-deep);
+    height:100%; margin:0; background:var(--bg-deep); overflow:hidden;
     font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    color:#fff;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
-    cursor:none; /* hide native cursor */
-    overflow:hidden;
+    color:#fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    user-select:none; -webkit-user-select:none; cursor:none;
   }
 
   /* ===== Chrome-like navbar (mac buttons right) ===== */
   .chrome-bar{
-    position:absolute;top:0;left:0;width:100%;height:68px;z-index:80;
-    display:flex;flex-direction:column;
-    background: linear-gradient(180deg, rgba(18,18,18,0.72), rgba(24,24,24,0.6));
-    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    position:absolute; top:0; left:0; width:100%; height:68px; z-index:140;
+    display:flex; flex-direction:column;
+    background: linear-gradient(180deg, rgba(18,18,18,0.78), rgba(20,20,20,0.66));
+    box-shadow:0 8px 24px rgba(0,0,0,0.55);
     backdrop-filter: blur(6px) saturate(110%);
   }
-  .tabs-row{height:32px;display:flex;align-items:flex-end;padding-left:8px;gap:6px;background:linear-gradient(180deg,#252425,#2b2b2b)}
-  .tab{padding:6px 12px;background:#333;border-radius:8px 8px 0 0;color:#cfcfcf;display:flex;gap:8px;align-items:center;min-width:120px;font-size:13px}
-  .tab.active{background:linear-gradient(180deg,#0f1112,#171718);color:#fff}
-  .new-tab{width:28px;height:22px;background:#353535;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bdbdbd;font-weight:600}
+  .tabs-row{ height:32px; display:flex; align-items:flex-end; padding-left:8px; gap:6px; background:linear-gradient(180deg,#1f1f22,#252525) }
+  .tab{ padding:6px 12px; background:#303033; border-radius:8px 8px 0 0; color:#cfcfcf; min-width:120px; display:flex; align-items:center; gap:8px; font-size:13px; }
+  .tab.active{ background:linear-gradient(180deg,#0c0d0f,#131314); color:#fff; }
+  .new-tab{ width:28px;height:22px;background:#363636;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bdbdbd;font-weight:600; }
 
-  .address-row{height:36px;display:flex;align-items:center;padding:0 12px;gap:10px}
-  .nav-btns{display:flex;gap:8px}
-  .nav-btn{width:22px;height:22px;border-radius:6px;background:#2f2f2f;display:flex;align-items:center;justify-content:center;color:#9ea0a6;font-weight:700}
-  .omnibox{flex:1;height:26px;border-radius:18px;padding:0 14px;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#2b2b2b,#252525);color:#cfcfcf;font-family:ui-monospace,Menlo,monospace;font-size:13px;box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02)}
-  .omnibox .lock{color:#66c266}
-  .mac-btns{display:flex;gap:8px;align-items:center}
-  .mac-btn{width:12px;height:12px;border-radius:50%;box-shadow:0 1px 0 rgba(0,0,0,0.36) inset}
-  .mac-close{background:#ff5f56}.mac-min{background:#ffbd2e}.mac-max{background:#27c93f}
+  .address-row{ height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; }
+  .nav-btns{ display:flex; gap:8px; }
+  .nav-btn{ width:22px;height:22px;border-radius:6px;background:#2f2f2f;display:flex;align-items:center;justify-content:center;color:#9ea0a6;font-weight:700 }
+  .omnibox{ flex:1; height:26px; border-radius:18px; padding:0 14px; display:flex; align-items:center; gap:8px;
+            background:linear-gradient(180deg,#272a2c,#232426); color:#cfcfcf; font-family:ui-monospace,Menlo,monospace; font-size:13px;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02); }
+  .omnibox .lock{ color:#66c266 }
 
-  /* ===== Background: layered calm sunset =====
-     We create multiple layers with soft gradients, slight vertical stacking,
-     gentle slow animation and subtle parallax on mousemove. */
-  #sunset {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
+  .mac-btns{ display:flex; gap:8px; align-items:center; }
+  .mac-btn{ width:12px;height:12px;border-radius:50%; box-shadow:0 1px 0 rgba(0,0,0,0.36) inset }
+  .mac-close{ background:#ff5f56 } .mac-min{ background:#ffbd2e } .mac-max{ background:#27c93f }
+
+  /* ===== Layered calm sunset (darker) ===== */
+  #sunset { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
   .sunset-layer{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:0;
-    width:160%;
-    height:40%;
-    border-radius:40% 40% 0 0;
-    opacity:0.9;
-    filter: blur(18px) saturate(105%);
-    mix-blend-mode: screen;
-    will-change: transform, opacity;
+    position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:160%;
+    border-radius:40% 40% 0 0; opacity:0.9; mix-blend-mode: screen; will-change: transform, opacity;
   }
+  .l1{ background: linear-gradient(180deg,var(--layer1), rgba(2,12,22,0.9)); height:52%; bottom:-8%; opacity:0.95; filter: blur(26px) }
+  .l2{ background: linear-gradient(180deg,var(--layer2), rgba(3,28,48,0.85)); height:40%; bottom:-3%; opacity:0.92; filter: blur(18px) }
+  .l3{ background: linear-gradient(180deg,var(--layer3), rgba(0,60,100,0.6)); height:30%; bottom:4%; opacity:0.86; filter: blur(12px) }
+  .l4{ background: linear-gradient(180deg,var(--layer4), rgba(0,95,150,0.36)); height:20%; bottom:12%; opacity:0.78; filter: blur(8px) }
 
-  /* layers stacked from back (deep) to front (lighter) */
-  .l1{ background: linear-gradient(180deg,var(--layer1), rgba(2,20,40,0.7)); height:46%; bottom:-6%; opacity:0.85; filter: blur(22px) }
-  .l2{ background: linear-gradient(180deg,var(--layer2), rgba(3,40,70,0.6)); height:34%; bottom:-2%; opacity:0.82; filter: blur(16px) }
-  .l3{ background: linear-gradient(180deg,var(--layer3), rgba(0,80,140,0.45)); height:28%; bottom:4%; opacity:0.78; filter: blur(12px) }
-  .l4{ background: linear-gradient(180deg,var(--layer4), rgba(0,110,200,0.28)); height:18%; bottom:12%; opacity:0.72; filter: blur(8px) }
-
-  /* soft sun */
   .sun{
+    position:absolute; left:50%; transform:translateX(-50%); bottom:8%; width:140px; height:140px; border-radius:50%;
+    background: radial-gradient(circle at 35% 35%, rgba(0,200,255,0.9) 0%, rgba(0,150,255,0.38) 28%, rgba(0,80,160,0.06) 56%, rgba(0,0,0,0) 100%);
+    filter: blur(10px) saturate(120%); mix-blend-mode: screen; opacity:0.92;
+  }
+
+  /* small float animations (subtle) */
+  @keyframes floatSlow { 0%{ transform:translateX(-50%) translateY(0px) } 50%{ transform:translateX(-50%) translateY(-6px) } 100%{ transform:translateX(-50%) translateY(0px) } }
+  .l1{ animation: floatSlow 28s ease-in-out infinite; }
+  .l2{ animation: floatSlow 32s ease-in-out infinite; animation-delay:-3s }
+  .l3{ animation: floatSlow 36s ease-in-out infinite; animation-delay:-6s }
+  .l4{ animation: floatSlow 40s ease-in-out infinite; animation-delay:-9s }
+  .sun{ animation: floatSlow 44s ease-in-out infinite; animation-delay:-4s }
+
+  /* ===== Grain overlay canvas (drawn by JS) ===== */
+  #grain-canvas { position:absolute; inset:0; z-index:120; pointer-events:none; opacity:0.06; mix-blend-mode: overlay; }
+
+  /* ===== Faint animated semicircle arches (rainbow-ish) ===== */
+  .arches { position:absolute; inset:0; z-index:110; pointer-events:none; display:flex; align-items:center; justify-content:center; }
+  .arch {
     position:absolute;
     left:50%;
     transform:translateX(-50%);
-    bottom:8%;
-    width:160px;
-    height:160px;
+    bottom:10%;
+    width:1200px;
+    height:1200px;
     border-radius:50%;
-    background: radial-gradient(circle at 35% 35%, rgba(0,210,255,0.85) 0%, rgba(0,160,255,0.45) 25%, rgba(0,90,180,0.12) 55%, rgba(0,0,0,0) 100%);
-    filter: blur(10px) saturate(120%);
+    clip-path: inset(0 0 55% 0 round 50% 50% 0 0);
+    opacity:0.10; /* base 10% */
     mix-blend-mode: screen;
-    opacity:0.95;
     pointer-events:none;
+    filter: blur(8px) saturate(120%);
+    animation: archFade 10s ease-in-out infinite;
   }
+  /* staggered delays + different color gradients */
+  .arch.a1{ background: radial-gradient(circle at 50% 40%, rgba(0,200,255,0.12) 0%, rgba(0,120,255,0.06) 40%, rgba(0,60,140,0) 60%); animation-delay:0s; transform:translateX(-50%) scale(1); }
+  .arch.a2{ background: radial-gradient(circle at 50% 40%, rgba(0,180,240,0.11) 0%, rgba(0,110,220,0.045) 40%, rgba(0,60,140,0) 60%); animation-delay:1.8s; transform:translateX(-50%) scale(0.95); }
+  .arch.a3{ background: radial-gradient(circle at 50% 40%, rgba(6,150,230,0.095) 0%, rgba(0,100,200,0.045) 40%, rgba(0,60,140,0) 60%); animation-delay:3.6s; transform:translateX(-50%) scale(0.9); }
+  .arch.a4{ background: radial-gradient(circle at 50% 40%, rgba(0,140,210,0.085) 0%, rgba(0,95,185,0.035) 40%, rgba(0,60,140,0) 60%); animation-delay:5.4s; transform:translateX(-50%) scale(0.86); }
 
-  /* very subtle slow drifting animation */
-  @keyframes floatSlow { 0%{ transform:translateX(-50%) translateY(0px) } 50%{ transform:translateX(-50%) translateY(-6px) } 100%{ transform:translateX(-50%) translateY(0px) } }
-  .l1 { animation: floatSlow 18s ease-in-out infinite; }
-  .l2 { animation: floatSlow 22s ease-in-out infinite; animation-delay: -3s; }
-  .l3 { animation: floatSlow 26s ease-in-out infinite; animation-delay: -6s; }
-  .l4 { animation: floatSlow 30s ease-in-out infinite; animation-delay: -9s; }
-  .sun { animation: floatSlow 36s ease-in-out infinite; animation-delay:-4s }
+  @keyframes archFade{
+    0%{ opacity:0 }
+    10%{ opacity:0.10 }
+    50%{ opacity:0.06 }
+    90%{ opacity:0.10 }
+    100%{ opacity:0 }
+  }
 
   /* ===== Content centered under navbar ===== */
-  .content {
-    position: relative;
-    z-index: 90;
-    margin-top:68px;
-    min-height: calc(100vh - 68px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:20px;
-    box-sizing:border-box;
-  }
-  .card {
-    display:flex;flex-direction:column;align-items:center;gap:10px;
-    pointer-events:auto; /* allow clicks on links */
-  }
-  h1{
-    margin:0;font-size:3rem;line-height:1;
-    background:linear-gradient(90deg,var(--accent),#0077ff,#00f0ff);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    background-size:300% 300%; animation: gradientFlow 6s linear infinite;
-    user-select:none;
-  }
-  p{ margin:0;color:var(--muted); }
+  .content { position:relative; z-index:140; margin-top:68px; min-height: calc(100vh - 68px);
+            display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box; }
+  .card{ display:flex; flex-direction:column; align-items:center; gap:10px; pointer-events:auto; }
+  h1{ margin:0; font-size:3rem; line-height:1;
+      background:linear-gradient(90deg,var(--accent),#0077ff,#00f0ff);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-size:300% 300%; animation: gradientFlow 6s linear infinite; user-select:none; }
+  p{ margin:0; color:var(--muted); font-size:1rem }
+  .divider{ color:#222; font-family:monospace; margin:8px 0 }
+  .socials{ display:flex; align-items:center; gap:12px; font-weight:700; color:transparent; background:linear-gradient(90deg,#00f0ff,#0077ff,#00c6ff); -webkit-background-clip:text }
+  .dot{ width:8px;height:8px;border-radius:50%; background:linear-gradient(90deg,#00f0ff,#0077ff); animation:pulse 2.8s infinite }
+  @keyframes pulse{0%,100%{opacity:0.45;transform:scale(1)}50%{opacity:0.88;transform:scale(1.08)} }
 
-  .divider{ color:#2b2b2b; font-family:monospace; margin:8px 0 }
-  .socials{ display:flex;align-items:center;gap:12px;font-weight:700;color:transparent; background:linear-gradient(90deg,#00f0ff,#0077ff,#00c6ff); -webkit-background-clip:text }
-  .dot{ width:8px;height:8px;border-radius:50%; background:linear-gradient(90deg,#00f0ff,#0077ff); animation:pulse 2.4s infinite; }
-  @keyframes pulse{0%,100%{opacity:0.45;transform:scale(1)}50%{opacity:0.88;transform:scale(1.08)}}
+  footer{ position:fixed; bottom:12px; left:0; right:0; text-align:center; z-index:140; color:#7b7b7b; font-size:0.85rem; pointer-events:none }
 
-  footer{ position:fixed;bottom:12px;left:0;right:0;text-align:center;color:#7b7b7b;z-index:95;font-size:0.85rem;pointer-events:none }
+  /* ===== Custom cursor: large halo + core ===== */
+  #cursor { position:fixed; z-index:99999; left:0; top:0; width:128px; height:128px; border-radius:50%; pointer-events:none;
+           transform:translate(-50%,-50%) scale(1); background: radial-gradient(circle at 40% 35%, rgba(0,210,255,0.6) 0%, rgba(0,150,255,0.18) 24%, rgba(0,95,180,0.04) 52%, rgba(0,0,0,0) 100%); filter: blur(16px) saturate(140%); box-shadow:0 0 110px rgba(0,200,255,0.32), 0 0 220px rgba(0,120,255,0.12); mix-blend-mode: screen; transition: transform 0.12s linear, opacity 0.12s linear; }
+  #cursor-core{ position:fixed; z-index:100000; left:0; top:0; width:18px; height:18px; border-radius:50%; pointer-events:none;
+               background: rgba(255,255,255,0.98); box-shadow:0 0 20px rgba(180,230,255,0.95), 0 0 44px rgba(0,170,255,0.28); transform:translate(-50%,-50%); transition: transform 0.06s linear, opacity 0.12s linear; }
 
-  /* ===== Custom cursor: outer halo + inner core =====
-     outer is large and very visible; inner is solid and snappier.
-     always custom; links/buttons do not change native pointer. */
-  #cursor {
-    position: fixed;
-    z-index:99999;
-    left:0; top:0;
-    width:120px; height:120px;
-    border-radius:50%;
-    pointer-events: none;
-    transform: translate(-50%,-50%) scale(1);
-    background: radial-gradient(circle at 40% 35%, rgba(0,200,255,0.55) 0%, rgba(0,140,255,0.18) 22%, rgba(0,90,180,0.06) 48%, rgba(0,0,0,0) 100%);
-    filter: blur(14px) saturate(140%);
-    box-shadow: 0 0 90px rgba(0,190,255,0.35), 0 0 160px rgba(0,120,255,0.12);
-    mix-blend-mode: screen;
-    transition: transform 0.12s linear, opacity 0.12s linear;
-  }
-  #cursor-core {
-    position: fixed;
-    z-index:100000;
-    left:0; top:0;
-    width:16px; height:16px;
-    border-radius:50%;
-    pointer-events:none;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 0 18px rgba(160,220,255,0.95), 0 0 40px rgba(0,160,255,0.28);
-    transform: translate(-50%,-50%) scale(1);
-    transition: transform 0.06s linear, opacity 0.12s linear;
-  }
-  /* keep native pointer suppressed on interactive elements */
-  a,button { cursor: none !important; -webkit-tap-highlight-color: transparent }
-
-  /* responsive */
-  @media (max-width:520px){
-    h1{ font-size:2.2rem }
-    #cursor{ width:88px;height:88px;filter:blur(12px) }
-  }
-
-  /* respect reduced motion */
-  @media (prefers-reduced-motion: reduce){
-    .l1,.l2,.l3,.l4,.sun{ animation:none }
-    #cursor{ transition:none }
-  }
+  a,button{ cursor:none !important; -webkit-tap-highlight-color: transparent; }
+  @media (max-width:520px){ h1{ font-size:2.2rem } #cursor{ width:92px;height:92px; filter: blur(12px) } #cursor-core{ width:14px;height:14px } }
+  @media (prefers-reduced-motion:reduce){ .l1,.l2,.l3,.l4,.sun{ animation:none } #cursor{ transition:none } .arch{ animation:none } }
 </style>
 </head>
 <body>
@@ -205,7 +155,7 @@
     </div>
   </div>
 
-  <!-- layered mini-sunset -->
+  <!-- layered sunset + arches + grain -->
   <div id="sunset" aria-hidden="true">
     <div class="sunset-layer l1"></div>
     <div class="sunset-layer l2"></div>
@@ -214,9 +164,18 @@
     <div class="sun"></div>
   </div>
 
+  <div class="arches" aria-hidden="true">
+    <div class="arch a1"></div>
+    <div class="arch a2"></div>
+    <div class="arch a3"></div>
+    <div class="arch a4"></div>
+  </div>
+
+  <canvas id="grain-canvas"></canvas>
+
   <!-- centered content -->
   <main class="content" role="main" aria-live="polite">
-    <div class="card" style="pointer-events:auto">
+    <div class="card">
       <h1>lwcus</h1>
       <p>finnish soon to be coder</p>
       <div class="divider">──────────────</div>
@@ -234,48 +193,33 @@
   <div id="cursor-core" aria-hidden="true"></div>
 
 <script>
-/* ===== Year + basic click redirect ===== */
+/* ==== Year + link behavior ==== */
 document.getElementById('year').textContent = new Date().getFullYear();
 document.getElementById('discord-link').addEventListener('click', (e)=>{
   e.preventDefault();
   window.location.href = '/d';
 });
 
-/* ===== Cursor: trailing outer halo + snappy core ===== */
+/* ==== Cursor logic ==== */
 const cursor = document.getElementById('cursor');
 const core = document.getElementById('cursor-core');
+let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+let outerX = mouseX, outerY = mouseY, coreX = mouseX, coreY = mouseY;
+const outerEase = 0.14, coreEase = 0.36;
 
-let mouseX = window.innerWidth/2;
-let mouseY = window.innerHeight/2;
+window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+window.addEventListener('touchmove', ev => { if(ev.touches && ev.touches[0]){ mouseX = ev.touches[0].clientX; mouseY = ev.touches[0].clientY; } }, { passive:true });
 
-let outerX = mouseX, outerY = mouseY;
-let coreX = mouseX, coreY = mouseY;
-
-const outerEase = 0.14; // slower, gives halo trail
-const coreEase = 0.35;  // faster, snappy core
-
-window.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
-window.addEventListener('touchmove', (ev) => {
-  if(ev.touches && ev.touches[0]){ mouseX = ev.touches[0].clientX; mouseY = ev.touches[0].clientY; }
-}, { passive:true });
-
-function updateCursor(){
-  // lerp outer
+function cursorLoop(){
   outerX += (mouseX - outerX) * outerEase;
   outerY += (mouseY - outerY) * outerEase;
-  // lerp core
   coreX += (mouseX - coreX) * coreEase;
   coreY += (mouseY - coreY) * coreEase;
 
-  // compute subtle scale based on instantaneous speed (more noticeable)
-  const dx = mouseX - coreX;
-  const dy = mouseY - coreY;
-  const speed = Math.hypot(dx,dy);
-  const outerScale = 1 + Math.min(speed * 0.015, 0.65); // halo grows with motion
-  const coreScale = 1 - Math.min(speed * 0.005, 0.18);  // core slightly compresses when fast
+  const dx = mouseX - coreX, dy = mouseY - coreY;
+  const speed = Math.hypot(dx, dy);
+  const outerScale = 1 + Math.min(speed * 0.015, 0.8);
+  const coreScale = 1 - Math.min(speed * 0.006, 0.22);
 
   cursor.style.left = outerX + 'px';
   cursor.style.top = outerY + 'px';
@@ -285,64 +229,96 @@ function updateCursor(){
   core.style.top = coreY + 'px';
   core.style.transform = `translate(-50%,-50%) scale(${coreScale})`;
 
-  requestAnimationFrame(updateCursor);
+  requestAnimationFrame(cursorLoop);
 }
-updateCursor();
+cursorLoop();
 
-/* ===== gentle parallax for sunset layers based on mouse position =====
-   small subtle movement to add depth, but calm: max translate 12px */
-const layers = Array.from(document.querySelectorAll('.sunset-layer'));
-const sun = document.querySelector('.sun');
+/* click feedback */
+window.addEventListener('mousedown', ()=>{ core.style.transform += ' scale(0.78)'; core.style.opacity='0.92'; });
+window.addEventListener('mouseup', ()=>{ core.style.opacity='1'; });
 
-function updateParallax(){
-  const nx = (mouseX / window.innerWidth - 0.5) * 2; // -1..1
-  const ny = (mouseY / window.innerHeight - 0.5) * 2; // -1..1
-  // each layer moves a little; front ones move more
-  const moves = [
-    {el:document.querySelector('.l1'), amt:4},
-    {el:document.querySelector('.l2'), amt:6},
-    {el:document.querySelector('.l3'), amt:9},
-    {el:document.querySelector('.l4'), amt:12},
-    {el: sun, amt:6}
-  ];
-  for(const m of moves){
+/* ==== Parallax for sunset layers + arches ==== */
+const mouseState = { x: window.innerWidth/2, y: window.innerHeight/2 };
+window.addEventListener('mousemove', e => { mouseState.x = e.clientX; mouseState.y = e.clientY; });
+
+const layerMoves = [
+  {el: document.querySelector('.l1'), amt:3},
+  {el: document.querySelector('.l2'), amt:6},
+  {el: document.querySelector('.l3'), amt:9},
+  {el: document.querySelector('.l4'), amt:12},
+  {el: document.querySelector('.sun'), amt:6},
+  {el: document.querySelector('.a1'), amt:6},
+  {el: document.querySelector('.a2'), amt:8},
+  {el: document.querySelector('.a3'), amt:10},
+  {el: document.querySelector('.a4'), amt:12},
+];
+
+function parallaxLoop(){
+  const nx = (mouseState.x / window.innerWidth - 0.5) * 2;
+  const ny = (mouseState.y / window.innerHeight - 0.5) * 2;
+  for(const m of layerMoves){
+    if(!m.el) continue;
     const tx = nx * m.amt;
-    const ty = ny * (m.amt * 0.12); // slight vertical
+    const ty = ny * (m.amt * 0.08);
     m.el.style.transform = `translateX(calc(-50% + ${tx}px)) translateY(${ty}px)`;
   }
-  requestAnimationFrame(updateParallax);
+  requestAnimationFrame(parallaxLoop);
 }
-updateParallax();
+parallaxLoop();
 
-/* ===== responsiveness: adjust sizes slightly on resize ===== */
-function handleResize(){
-  // shrink sun on small screens
-  if(window.innerWidth < 520){
-    sun.style.width = '110px';
-    sun.style.height = '110px';
-    cursor.style.width = '88px';
-    cursor.style.height = '88px';
-  } else {
-    sun.style.width = '160px';
-    sun.style.height = '160px';
-    cursor.style.width = '120px';
-    cursor.style.height = '120px';
+/* ==== Grain canvas: draw subtle static noise, re-generate on resize ==== */
+const grainCanvas = document.getElementById('grain-canvas');
+const gCtx = grainCanvas.getContext('2d');
+
+function drawGrain(){
+  // small offscreen canvas to generate noise cheaply and scale up
+  const off = document.createElement('canvas');
+  const size = 240; // small texture size
+  off.width = size; off.height = size;
+  const octx = off.getContext('2d');
+  const id = octx.createImageData(size, size);
+  for(let i=0;i<id.data.length;i+=4){
+    // noise grayscale: bias slightly mid-dark
+    const v = 150 + Math.floor((Math.random()-0.5) * 80);
+    id.data[i] = v; id.data[i+1] = v; id.data[i+2] = v;
+    id.data[i+3] = 255; // opaque because we control alpha by canvas opacity
   }
+  octx.putImageData(id, 0, 0);
+  // draw tiled across main canvas
+  fitCanvasToWindow(grainCanvas);
+  gCtx.clearRect(0,0,grainCanvas.width, grainCanvas.height);
+  // create pattern and fill
+  const pat = gCtx.createPattern(off, 'repeat');
+  gCtx.globalAlpha = 0.9;
+  gCtx.fillStyle = pat;
+  gCtx.fillRect(0,0,grainCanvas.width, grainCanvas.height);
+  // lightly tint grain to blend with site palette
+  gCtx.globalCompositeOperation = 'overlay';
+  gCtx.fillStyle = 'rgba(3,22,40,0.06)';
+  gCtx.fillRect(0,0,grainCanvas.width, grainCanvas.height);
+  gCtx.globalCompositeOperation = 'source-over';
 }
-handleResize();
-window.addEventListener('resize', handleResize);
 
-/* ===== optional click ripple on core (visual feedback) ===== */
-window.addEventListener('mousedown', ()=> {
-  core.style.transform += ' scale(0.78)';
-  core.style.opacity = '0.9';
-});
-window.addEventListener('mouseup', ()=> {
-  core.style.opacity = '1';
-});
+function fitCanvasToWindow(canvas){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  canvas.width = Math.floor(window.innerWidth * dpr);
+  canvas.height = Math.floor(window.innerHeight * dpr);
+  gCtx.setTransform(dpr,0,0,dpr,0,0);
+}
 
-/* ===== keep interactions accessible (links still clickable) ===== */
-document.addEventListener('mousedown', (e)=>{ /* no-op but ensures pointer-events are available for click targets */ }, true);
+window.addEventListener('resize', () => { drawGrain(); });
+drawGrain();
+
+/* ==== Accessibility: ensure click events still work even though cursor is custom ==== */
+document.addEventListener('pointerdown', () => {}, true);
+
+/* ==== optional: reduce motion handling ==== */
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  // stop animations visually for reduced-motion preference
+  document.querySelectorAll('.l1,.l2,.l3,.l4,.sun,.arch').forEach(el => el.style.animation = 'none');
+}
 
 </script>
 </body>
