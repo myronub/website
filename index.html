@@ -17,6 +17,11 @@
     color:#fff;
     text-align:center;
     overflow:hidden;
+    cursor:none; /* hide default cursor */
+    user-select:none; /* disable selection */
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
   }
 
   /* ===== Realistic Chrome Nav with Mac Buttons on Right ===== */
@@ -214,17 +219,30 @@
   }
 
   footer {
-    position:fixed; /* fixed at very bottom */
+    position:fixed;
     bottom:1rem;
     width:100%;
     text-align:center;
     font-size:0.8rem;
     color:#555;
   }
+
+  /* ===== Custom Cursor ===== */
+  #cursor {
+    position:fixed;
+    top:0; left:0;
+    width:20px; height:20px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(0,200,255,0.9), rgba(0,100,255,0.2));
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 15px rgba(0,200,255,0.8), 0 0 30px rgba(0,100,255,0.5);
+    z-index:9999;
+  }
 </style>
 </head>
 <body>
-  <!-- Chrome-like Navbar with Mac buttons (right side) -->
+  <!-- Chrome-like Navbar -->
   <div class="chrome-bar">
     <div class="tabs-row">
       <div class="tab active">
@@ -244,7 +262,6 @@
         <span class="lock">🔒</span>
         <span>https://lwcus.so/</span>
       </div>
-      <!-- Mac buttons now live here -->
       <div class="mac-btns">
         <div class="mac-btn mac-close"></div>
         <div class="mac-btn mac-min"></div>
@@ -265,6 +282,9 @@
     </div>
     <footer>&copy; <span id="year"></span> lwcus</footer>
   </div>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
@@ -295,7 +315,13 @@
   }
 
   let mouse = {x: window.innerWidth/2, y: window.innerHeight/2};
-  window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
+  window.addEventListener('mousemove', e => { 
+    mouse.x=e.clientX; 
+    mouse.y=e.clientY; 
+    const cursor = document.getElementById('cursor');
+    cursor.style.left = mouse.x + 'px';
+    cursor.style.top = mouse.y + 'px';
+  });
 
   function draw(){
     c.clearRect(0,0,canvas.width,canvas.height);
