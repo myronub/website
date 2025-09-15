@@ -1,354 +1,141 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>lwcus</title>
+<title>lwcus — redesigned</title>
 <style>
-  /* ========== Config / Palette ========== */
+  /* ====== Palette & config ====== */
   :root{
-    --bg-deep: #071125;      /* dark navy background (not pure black) */
-    --layer1: #031224;       /* darkest layer */
-    --layer2: #04263a;
-    --layer3: #043e63;
-    --layer4: #005f95;
-    --accent: #00c6ff;
-    --muted: #9aa4b0;
-    --grain-opacity: 0.06;   /* tweak grain strength: 0 = none, 0.12 = heavier */
-    --arc-opacity: 0.10;     /* 10% opacity semicircles as requested */
+    --bg-deep:#071125;
+    --layer1:#031224; --layer2:#04263a; --layer3:#043e63; --layer4:#005f95;
+    --accent:#00c6ff; --muted:#9aa4b0;
+    --grain-opacity:0.03; /* lighter grain now */
   }
 
-  /* ===== Global / no selection / hide native cursor ===== */
-  html,body{
-    height:100%;
-    margin:0;
-    background: var(--bg-deep);
-    font-family: system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    color:#fff;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
-    cursor:none; /* hide native pointer */
-    overflow:hidden;
-  }
+  /* ===== Global ===== */
+  html,body{height:100%;margin:0;background:var(--bg-deep);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 
-  /* ===== subtle grain overlay via inline SVG noise (body pseudo) ===== */
+  /* subtle grain overlay (lighter) */
   body::before{
-    content:"";
-    position:fixed;
-    left:0; top:0; right:0; bottom:0;
-    z-index:200; /* above background but below UI */
-    pointer-events:none;
-    background-image: url("data:image/svg+xml;utf8,\
-      <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'>\
-        <filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter>\
-        <rect width='100%' height='100%' filter='url(%23n)' opacity='0.9' fill='white'/>\
-      </svg>");
-    background-repeat: repeat;
-    background-size: 200px 200px;
-    opacity: var(--grain-opacity);
-    mix-blend-mode: overlay;
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:150;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9' fill='white'/></svg>");
+    background-repeat:repeat;background-size:200px 200px;opacity:var(--grain-opacity);mix-blend-mode:overlay;
   }
 
-  /* ===== Chrome-like navbar (mac buttons on right) ===== */
-  .chrome-bar{
-    position:absolute;top:0;left:0;width:100%;height:68px;z-index:120;
-    display:flex;flex-direction:column;
-    background: linear-gradient(180deg, rgba(18,18,18,0.78), rgba(22,22,22,0.64));
-    box-shadow:0 6px 18px rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px) saturate(110%);
-  }
-  .tabs-row{height:32px;display:flex;align-items:flex-end;padding-left:8px;gap:6px;background:linear-gradient(180deg,#202326,#26282a)}
+  /* ===== Chrome-like navbar ===== */
+  .chrome-bar{position:fixed;top:0;left:0;width:100%;height:64px;z-index:120;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(18,18,18,0.78),rgba(22,22,22,0.64));box-shadow:0 6px 18px rgba(0,0,0,0.6);backdrop-filter: blur(6px) saturate(110%);}
+  .tabs-row{height:30px;display:flex;align-items:flex-end;padding-left:8px;gap:6px;background:linear-gradient(180deg,#202326,#26282a)}
   .tab{padding:6px 12px;background:#333;border-radius:8px 8px 0 0;color:#cfcfcf;display:flex;gap:8px;align-items:center;min-width:120px;font-size:13px}
   .tab.active{background:linear-gradient(180deg,#0b0e10,#131416);color:#fff}
-  .new-tab{width:28px;height:22px;background:#353535;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#bdbdbd;font-weight:600}
-
-  .address-row{height:36px;display:flex;align-items:center;padding:0 12px;gap:10px}
-  .nav-btns{display:flex;gap:8px}
-  .nav-btn{width:22px;height:22px;border-radius:6px;background:#2f2f2f;display:flex;align-items:center;justify-content:center;color:#9ea0a6;font-weight:700}
-  .omnibox{flex:1;height:26px;border-radius:18px;padding:0 14px;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#2b2b2b,#252525);color:#cfcfcf;font-family:ui-monospace,Menlo,monospace;font-size:13px;box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02)}
-  .omnibox .lock{color:#66c266}
-  .mac-btns{display:flex;gap:8px;align-items:center}
+  .address-row{height:34px;display:flex;align-items:center;padding:0 12px;gap:10px}
+  .omnibox{flex:1;height:28px;border-radius:18px;padding:0 14px;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#2b2b2b,#252525);color:#cfcfcf;font-family:ui-monospace,Menlo,monospace;font-size:13px;box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02)}
   .mac-btn{width:12px;height:12px;border-radius:50%;box-shadow:0 1px 0 rgba(0,0,0,0.36) inset}
   .mac-close{background:#ff5f56}.mac-min{background:#ffbd2e}.mac-max{background:#27c93f}
 
-  /* ===== Darkened layered sunset (darker palette) ===== */
-  #sunset{
-    position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-    background: radial-gradient(1200px 600px at 50% 110%, rgba(0,18,32,0.35), transparent 30%); /* faint overall vignette */
-  }
-  .sunset-layer{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:0;
-    width:160%;
-    border-radius:40% 40% 0 0;
-    opacity:0.9;
-    filter: blur(18px) saturate(100%);
+  /* ===== Background layers container ===== */
+  #sunset{position:fixed;inset:auto 0 0 0;height:48vh;z-index:0;pointer-events:none;overflow:hidden;display:block}
+
+  /* SVG paintbrush filter is defined in the document and applied below */
+  .sunset-layer{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:170%;border-radius:40% 40% 0 0;opacity:0.95;will-change:transform,opacity}
+
+  /* Apply a painterly displacement + blur via the SVG filter + small CSS blur/saturate for extra softness */
+  .sunset-layer, .sunset-sun {
+    filter: url(#paintBrush) blur(12px) saturate(120%);
     mix-blend-mode: screen;
-    will-change: transform, opacity;
-  }
-  .l1{ background: linear-gradient(180deg,var(--layer1), rgba(2,18,30,0.9)); height:46%; bottom:-10%; opacity:0.92; filter: blur(26px); }
-  .l2{ background: linear-gradient(180deg,var(--layer2), rgba(3,36,60,0.85)); height:36%; bottom:-4%; opacity:0.86; filter: blur(18px); }
-  .l3{ background: linear-gradient(180deg,var(--layer3), rgba(2,72,120,0.6)); height:28%; bottom:6%; opacity:0.82; filter: blur(12px); }
-  .l4{ background: linear-gradient(180deg,var(--layer4), rgba(1,100,170,0.35)); height:18%; bottom:14%; opacity:0.78; filter: blur(8px); }
-
-  .sun{
-    position:absolute;left:50%;transform:translateX(-50%);bottom:8%;
-    width:160px;height:160px;border-radius:50%;
-    background: radial-gradient(circle at 35% 35%, rgba(0,200,255,0.85) 0%, rgba(0,160,255,0.45) 25%, rgba(0,90,180,0.12) 55%, rgba(0,0,0,0) 100%);
-    filter: blur(10px) saturate(110%);mix-blend-mode: screen;opacity:0.95;
   }
 
-  /* gentle float (kept subtle) */
-  @keyframes floatSlow { 0%{ transform:translateX(-50%) translateY(0px) } 50%{ transform:translateX(-50%) translateY(-5px) } 100%{ transform:translateX(-50%) translateY(0px) } }
-  .l1 { animation: floatSlow 22s ease-in-out infinite; }
-  .l2 { animation: floatSlow 26s ease-in-out infinite; animation-delay: -3s; }
-  .l3 { animation: floatSlow 30s ease-in-out infinite; animation-delay: -6s; }
-  .l4 { animation: floatSlow 36s ease-in-out infinite; animation-delay: -9s; }
-  .sun { animation: floatSlow 40s ease-in-out infinite; animation-delay:-4s }
+  /* layers (heavier blur in the farther layers to feel brushed) */
+  .l1{background:linear-gradient(180deg,var(--layer1),rgba(2,18,30,0.9));height:46%;bottom:-6%;opacity:0.92;}
+  .l2{background:linear-gradient(180deg,var(--layer2),rgba(3,36,60,0.85));height:36%;bottom:-2%;opacity:0.86;filter:inherit}
+  .l3{background:linear-gradient(180deg,var(--layer3),rgba(2,72,120,0.6));height:28%;bottom:6%;opacity:0.82}
+  .l4{background:linear-gradient(180deg,var(--layer4),rgba(1,100,170,0.35));height:18%;bottom:14%;opacity:0.78}
 
-  /* ===== translucent semicircles (rainbow arcs) =====
-     large semicircles clipped to top half; low opacity + gentle fade in/out */
-  .arc {
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:8%;
-    border-radius:50%;
-    clip-path: inset(50% 0 0 0); /* show top half only */
-    filter: blur(6px) saturate(125%);
-    mix-blend-mode: screen;
-    opacity: var(--arc-opacity);
-    pointer-events:none;
-  }
+  .sunset-sun{position:absolute;left:50%;transform:translateX(-50%);bottom:12%;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 35% 35%, rgba(0,200,255,0.85) 0%, rgba(0,160,255,0.45) 25%, rgba(0,90,180,0.12) 55%, rgba(0,0,0,0) 100%);opacity:0.9}
 
-  /* arc sizes/colors - darker palette but colorful */
-  .arc.a1{ width:150vmin; height:150vmin;
-    background: conic-gradient(from 160deg, rgba(0,198,255,0.95), rgba(0,140,255,0.85), rgba(0,80,180,0.75)); animation: arcPulse 10s ease-in-out infinite; animation-delay: 0s; }
-  .arc.a2{ width:120vmin; height:120vmin;
-    background: conic-gradient(from 160deg, rgba(0,180,240,0.85), rgba(0,120,220,0.7), rgba(0,70,160,0.55)); animation: arcPulse 12s ease-in-out infinite; animation-delay: -2s; }
-  .arc.a3{ width:90vmin; height:90vmin;
-    background: conic-gradient(from 160deg, rgba(0,150,220,0.75), rgba(0,110,190,0.6), rgba(0,70,140,0.45)); animation: arcPulse 14s ease-in-out infinite; animation-delay: -4s; }
+  /* Reduce motion and keep only gentle float for subtle life */
+  @keyframes floatSlow{0%{transform:translateX(-50%) translateY(0px)}50%{transform:translateX(-50%) translateY(-4px)}100%{transform:translateX(-50%) translateY(0px)}}
+  .l1{animation:floatSlow 28s ease-in-out infinite}.l2{animation:floatSlow 34s ease-in-out infinite;animation-delay:-3s}.l3{animation:floatSlow 40s ease-in-out infinite;animation-delay:-6s}.l4{animation:floatSlow 46s ease-in-out infinite;animation-delay:-9s}.sunset-sun{animation:floatSlow 48s ease-in-out infinite;animation-delay:-4s}
 
-  @keyframes arcPulse {
-    0%{ opacity: calc(var(--arc-opacity) * 0.6); transform: translateX(-50%) translateY(0px) scale(1); }
-    50%{ opacity: calc(var(--arc-opacity) * 1.05); transform: translateX(-50%) translateY(-6px) scale(1.02); }
-    100%{ opacity: calc(var(--arc-opacity) * 0.6); transform: translateX(-50%) translateY(0px) scale(1); }
-  }
+  /* ===== Main content ===== */
+  .content{position:relative;z-index:110;margin-top:64px;min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;box-sizing:border-box}
+  .card{display:flex;flex-direction:column;align-items:center;gap:10px}
+  h1{margin:0;font-size:3rem;line-height:1;background:linear-gradient(90deg,var(--accent),#0077ff,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 300%;animation:gradientFlow 6s linear infinite}
+  p{margin:0;color:var(--muted)}
+  .divider{color:#222;font-family:monospace;margin:8px 0}
+  .socials{display:flex;align-items:center;gap:12px;font-weight:700;color:transparent;background:linear-gradient(90deg,#00f0ff,#0077ff,#00c6ff);-webkit-background-clip:text}
+  .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,#00f0ff,#0077ff);animation:pulse 2.8s infinite}
+  @keyframes pulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:0.95;transform:scale(1.08)}}
 
-  /* ===== Main content (centered under navbar) ===== */
-  .content{
-    position:relative; z-index:110; margin-top:68px; min-height: calc(100vh - 68px);
-    display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box;
-  }
-  .card{ display:flex; flex-direction:column; align-items:center; gap:10px; pointer-events:auto }
-  h1{ margin:0; font-size:3rem; line-height:1; background:linear-gradient(90deg,var(--accent),#0077ff,#00f0ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-size:300% 300%; animation: gradientFlow 6s linear infinite; user-select:none; }
-  p{ margin:0; color:var(--muted); }
-  .divider{ color:#222; font-family:monospace; margin:8px 0 }
-  .socials{ display:flex; align-items:center; gap:12px; font-weight:700; color:transparent; background:linear-gradient(90deg,#00f0ff,#0077ff,#00c6ff); -webkit-background-clip:text }
-  .dot{ width:8px; height:8px; border-radius:50%; background:linear-gradient(90deg,#00f0ff,#0077ff); animation: pulse 2.8s infinite }
-  @keyframes pulse{ 0%,100%{opacity:0.5; transform:scale(1)} 50%{opacity:0.95; transform:scale(1.08)} }
-
-  footer{ position:fixed; bottom:12px; left:0; right:0; text-align:center; z-index:115; color:#7b7b7b; font-size:0.85rem; pointer-events:none }
-
-  /* ===== Custom cursor: big halo + bright core (more noticeable) ===== */
-  #cursor {
-    position: fixed;
-    z-index:99999;
-    left:0; top:0;
-    width:140px; height:140px; /* more noticeable */
-    border-radius:50%;
-    pointer-events: none;
-    transform: translate(-50%,-50%) scale(1);
-    background: radial-gradient(circle at 40% 35%, rgba(0,220,255,0.6) 0%, rgba(0,150,255,0.22) 24%, rgba(0,80,170,0.06) 48%, rgba(0,0,0,0) 100%);
-    filter: blur(16px) saturate(140%);
-    box-shadow: 0 0 120px rgba(0,200,255,0.35), 0 0 240px rgba(0,120,255,0.12);
-    mix-blend-mode: screen;
-    transition: transform 0.12s linear, opacity 0.12s linear;
-  }
-  #cursor-core {
-    position: fixed;
-    z-index:100000;
-    left:0; top:0;
-    width:18px; height:18px;
-    border-radius:50%;
-    pointer-events:none;
-    background: rgba(255,255,255,0.98);
-    box-shadow: 0 0 20px rgba(170,230,255,0.95), 0 0 48px rgba(0,170,255,0.3);
-    transform: translate(-50%,-50%) scale(1);
-    transition: transform 0.06s linear, opacity 0.12s linear;
-  }
-  a,button { cursor: none !important; -webkit-tap-highlight-color: transparent }
+  footer{position:fixed;bottom:12px;left:0;right:0;text-align:center;z-index:115;color:#7b7b7b;font-size:0.85rem}
 
   /* small screens */
-  @media (max-width:520px){
-    h1{ font-size:2.2rem }
-    #cursor{ width:96px; height:96px; filter: blur(12px) }
-  }
+  @media (max-width:520px){h1{font-size:2.2rem}.sunset-sun{width:110px;height:110px}}
 
   /* reduced motion */
-  @media (prefers-reduced-motion: reduce){
-    .l1,.l2,.l3,.l4,.sun{ animation:none }
-    #cursor{ transition:none }
-    .arc{ animation:none }
-  }
+  @media (prefers-reduced-motion:reduce){.l1,.l2,.l3,.l4,.sunset-sun{animation:none}}
 </style>
 </head>
 <body>
-  <!-- Chrome nav -->
-  <div class="chrome-bar" aria-hidden="true">
-    <div class="tabs-row">
-      <div class="tab active">lwcus – Portfolio</div>
-      <div class="tab">New Tab</div>
-      <div class="new-tab">+</div>
-    </div>
-    <div class="address-row">
-      <div class="nav-btns">
-        <div class="nav-btn">←</div>
-        <div class="nav-btn">→</div>
-        <div class="nav-btn">⟳</div>
-      </div>
-      <div class="omnibox"><span class="lock">🔒</span><span>https://lwcus.so/</span></div>
-      <div class="mac-btns">
-        <div class="mac-btn mac-close"></div>
-        <div class="mac-btn mac-min"></div>
-        <div class="mac-btn mac-max"></div>
-      </div>
+
+<!-- SVG filters (paintbrush / displacement + blur) -->
+<svg width="0" height="0" style="position:absolute;left:0;top:0;">
+  <defs>
+    <!-- paintBrush: low-frequency turbulence + displacement + blur -> painterly strokes -->
+    <filter id="paintBrush" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="6" result="noise" />
+      <!-- gentle displacement to get brush-like smears -->
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" xChannelSelector="R" yChannelSelector="G" />
+      <!-- slightly soften edges -->
+      <feGaussianBlur stdDeviation="6" />
+      <!-- keep a bit more color -->
+      <feColorMatrix type="saturate" values="1.05" />
+    </filter>
+  </defs>
+</svg>
+
+<!-- Chrome nav -->
+<div class="chrome-bar" aria-hidden="true">
+  <div class="tabs-row">
+    <div class="tab active">lwcus – Portfolio</div>
+    <div class="tab">New Tab</div>
+    <div class="tab" style="background:#2b2b2b;">+</div>
+  </div>
+  <div class="address-row">
+    <div style="display:flex;gap:8px"><div style="width:22px;height:22px;border-radius:6px;background:#2f2f2f;display:flex;align-items:center;justify-content:center;color:#9ea0a6;font-weight:700">←</div><div style="width:22px;height:22px;border-radius:6px;background:#2f2f2f;display:flex;align-items:center;justify-content:center;color:#9ea0a6;font-weight:700">→</div></div>
+    <div class="omnibox"><span style="color:#66c266;margin-right:8px">🔒</span><span>https://lwcus.so/</span></div>
+    <div style="display:flex;gap:8px;align-items:center;margin-left:8px"><div class="mac-btn mac-close"></div><div class="mac-btn mac-min"></div><div class="mac-btn mac-max"></div></div>
+  </div>
+</div>
+
+<!-- Layered background (clean, no arcs) -->
+<div id="sunset" aria-hidden="true">
+  <div class="sunset-layer l1"></div>
+  <div class="sunset-layer l2"></div>
+  <div class="sunset-layer l3"></div>
+  <div class="sunset-layer l4"></div>
+  <div class="sunset-sun"></div>
+</div>
+
+<!-- Main content -->
+<main class="content" role="main" aria-live="polite">
+  <div class="card">
+    <h1>lwcus</h1>
+    <p>finnish soon to be coder</p>
+    <div class="divider">──────────────</div>
+    <div class="socials">
+      <a id="discord-link" href="#" style="text-decoration:none;color:inherit">discord</a>
+      <div class="dot" aria-hidden="true"></div>
     </div>
   </div>
+</main>
 
-  <!-- Layered dark sunset + arcs -->
-  <div id="sunset" aria-hidden="true">
-    <div class="sunset-layer l1"></div>
-    <div class="sunset-layer l2"></div>
-    <div class="sunset-layer l3"></div>
-    <div class="sunset-layer l4"></div>
-    <div class="sun"></div>
-
-    <!-- translucent semicircles (rainbow-style faded arcs) -->
-    <div class="arc a1"></div>
-    <div class="arc a2"></div>
-    <div class="arc a3"></div>
-  </div>
-
-  <!-- Centered content -->
-  <main class="content" role="main" aria-live="polite">
-    <div class="card" style="pointer-events:auto">
-      <h1>lwcus</h1>
-      <p>finnish soon to be coder</p>
-      <div class="divider">──────────────</div>
-      <div class="socials">
-        <a id="discord-link" href="#">discord</a>
-        <div class="dot" aria-hidden="true"></div>
-      </div>
-    </div>
-  </main>
-
-  <footer>&copy; <span id="year"></span> lwcus</footer>
-
-  <!-- Custom cursor elements -->
-  <div id="cursor" aria-hidden="true"></div>
-  <div id="cursor-core" aria-hidden="true"></div>
+<footer>&copy; <span id="year"></span> lwcus</footer>
 
 <script>
-/* ===== year + discord redirect ===== */
-document.getElementById('year').textContent = new Date().getFullYear();
-document.getElementById('discord-link').addEventListener('click', (e)=>{
-  e.preventDefault();
-  window.location.href = '/d';
-});
-
-/* ===== Cursor: outer halo + core with smooth trailing ===== */
-const cursor = document.getElementById('cursor');
-const core = document.getElementById('cursor-core');
-
-let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-let outerX = mouseX, outerY = mouseY;
-let coreX = mouseX, coreY = mouseY;
-
-const outerEase = 0.13;
-const coreEase = 0.32;
-
-window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-window.addEventListener('touchmove', ev => { if(ev.touches && ev.touches[0]){ mouseX = ev.touches[0].clientX; mouseY = ev.touches[0].clientY; } }, { passive:true });
-
-function updateCursor(){
-  outerX += (mouseX - outerX) * outerEase;
-  outerY += (mouseY - outerY) * outerEase;
-  coreX += (mouseX - coreX) * coreEase;
-  coreY += (mouseY - coreY) * coreEase;
-
-  const dx = mouseX - coreX, dy = mouseY - coreY;
-  const speed = Math.hypot(dx,dy);
-  const outerScale = 1 + Math.min(speed * 0.016, 0.9);
-  const coreScale = 1 - Math.min(speed * 0.005, 0.25);
-
-  cursor.style.left = outerX + 'px';
-  cursor.style.top = outerY + 'px';
-  cursor.style.transform = `translate(-50%,-50%) scale(${outerScale})`;
-
-  core.style.left = coreX + 'px';
-  core.style.top = coreY + 'px';
-  core.style.transform = `translate(-50%,-50%) scale(${coreScale})`;
-
-  requestAnimationFrame(updateCursor);
-}
-updateCursor();
-
-/* ===== gentle parallax for sunset layers (subtle) ===== */
-const layers = [
-  {el: document.querySelector('.l1'), amt: 3},
-  {el: document.querySelector('.l2'), amt: 5},
-  {el: document.querySelector('.l3'), amt: 8},
-  {el: document.querySelector('.l4'), amt: 10},
-  {el: document.querySelector('.sun'), amt: 6}
-];
-
-function updateParallax(){
-  const nx = (mouseX / window.innerWidth - 0.5) * 2; // -1..1
-  const ny = (mouseY / window.innerHeight - 0.5) * 2;
-  layers.forEach((m, i) => {
-    const tx = nx * m.amt;
-    const ty = ny * (m.amt * 0.08);
-    m.el.style.transform = `translateX(calc(-50% + ${tx}px)) translateY(${ty}px)`;
-  });
-
-  // arcs parallax slightly
-  const arcs = document.querySelectorAll('.arc');
-  arcs.forEach((a, i) => {
-    const amp = (i+1) * 2.2;
-    a.style.transform = `translateX(calc(-50% + ${nx * amp}px)) translateY(${ny * amp * 0.06}px)`;
-  });
-
-  requestAnimationFrame(updateParallax);
-}
-updateParallax();
-
-/* ===== responsive adjustments ===== */
-function handleResize(){
-  if(window.innerWidth < 520){
-    cursor.style.width = '96px';
-    cursor.style.height = '96px';
-    document.querySelector('.sun').style.width = '110px';
-    document.querySelector('.sun').style.height = '110px';
-  }else{
-    cursor.style.width = '140px';
-    cursor.style.height = '140px';
-    document.querySelector('.sun').style.width = '160px';
-    document.querySelector('.sun').style.height = '160px';
-  }
-}
-window.addEventListener('resize', handleResize);
-handleResize();
-
-/* ===== subtle click feedback on core ===== */
-window.addEventListener('mousedown', ()=>{ core.style.transform += ' scale(0.82)'; core.style.opacity = '0.88'; });
-window.addEventListener('mouseup', ()=>{ core.style.opacity = '1'; });
-
-/* prevent accidental selection on double-clicks / touch highlights */
-document.addEventListener('selectstart', e => e.preventDefault());
+  /* year + link */
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('discord-link').addEventListener('click', (e)=>{ e.preventDefault(); window.location.href = '/d'; });
 </script>
 </body>
 </html>
