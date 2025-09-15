@@ -19,7 +19,7 @@
     overflow:hidden;
   }
 
-  /* ===== Realistic Chrome Nav with Mac Buttons ===== */
+  /* ===== Realistic Chrome Nav with Mac Buttons on Right ===== */
   .chrome-bar {
     position:absolute;
     top:0; left:0;
@@ -33,30 +33,13 @@
     box-shadow:0 2px 4px rgba(0,0,0,0.5);
   }
 
-  /* MacOS control buttons */
-  .mac-btns {
-    position:absolute;
-    top:7px;
-    left:12px;
-    display:flex;
-    gap:8px;
-    z-index:11;
-  }
-  .mac-btn {
-    width:12px; height:12px;
-    border-radius:50%;
-  }
-  .mac-close { background:#ff5f56; }
-  .mac-min   { background:#ffbd2e; }
-  .mac-max   { background:#27c93f; }
-
   /* --- Tabs --- */
   .tabs-row {
     display:flex;
     align-items:flex-end;
     height:32px;
     background:#2b2b2b;
-    padding-left:60px; /* space for mac buttons */
+    padding-left:6px;
   }
 
   .tab {
@@ -142,17 +125,19 @@
     text-overflow:ellipsis;
   }
 
-  .right-btns {
+  /* MacOS control buttons moved to right */
+  .mac-btns {
     display:flex;
     align-items:center;
     gap:8px;
   }
-  .circle-btn {
-    width:20px; height:20px;
+  .mac-btn {
+    width:12px; height:12px;
     border-radius:50%;
-    background:#555;
-    cursor:pointer;
   }
+  .mac-close { background:#ff5f56; }
+  .mac-min   { background:#ffbd2e; }
+  .mac-max   { background:#27c93f; }
 
   /* ===== Page content ===== */
   #bg {
@@ -229,21 +214,18 @@
   }
 
   footer {
-    position:absolute;
+    position:fixed; /* fixed at very bottom */
     bottom:1rem;
+    width:100%;
+    text-align:center;
     font-size:0.8rem;
     color:#555;
   }
 </style>
 </head>
 <body>
-  <!-- Chrome-like Navbar with Mac buttons -->
+  <!-- Chrome-like Navbar with Mac buttons (right side) -->
   <div class="chrome-bar">
-    <div class="mac-btns">
-      <div class="mac-btn mac-close"></div>
-      <div class="mac-btn mac-min"></div>
-      <div class="mac-btn mac-max"></div>
-    </div>
     <div class="tabs-row">
       <div class="tab active">
         <span>lwcus – Portfolio</span>
@@ -262,10 +244,11 @@
         <span class="lock">🔒</span>
         <span>https://lwcus.so/</span>
       </div>
-      <div class="right-btns">
-        <div class="circle-btn"></div>
-        <div class="circle-btn"></div>
-        <div class="circle-btn"></div>
+      <!-- Mac buttons now live here -->
+      <div class="mac-btns">
+        <div class="mac-btn mac-close"></div>
+        <div class="mac-btn mac-min"></div>
+        <div class="mac-btn mac-max"></div>
       </div>
     </div>
   </div>
