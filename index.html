@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>there's this boy, "lwcus"...</title>
+<title>lwcus — smooth cursor (locked visual)</title>
 <style>
   :root{
     --bg-deep:#071125;
@@ -12,25 +12,26 @@
     --grain-opacity:0.04; --arc-opacity:0.10;
   }
 
-  /* Global & non-selectable text */
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-deep),#050616);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#eaf6ff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-  * { -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+  /* global + disable text selection */
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-deep),#050616);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#eaf6ff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  *{ -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
 
-  /* Grain overlay */
+  /* subtle grain overlay */
   body::before{
-    content:""; position:fixed; inset:0; z-index:190; pointer-events:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9' fill='white'/></svg>");
-    background-repeat:repeat; background-size:200px 200px; opacity:var(--grain-opacity); mix-blend-mode:overlay;
+    content:"";position:fixed;inset:0;z-index:190;pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9' fill='white'/></svg>");
+    background-repeat:repeat;background-size:200px 200px;opacity:var(--grain-opacity);mix-blend-mode:overlay;
   }
 
-  body{cursor:none} /* hide native cursor */
+  /* hide native cursor (we'll show custom visual) */
+  body{cursor:none}
 
-  /* Top nav */
+  /* top nav */
   .nav{position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:220;display:flex;gap:26px;align-items:center;font-weight:700;letter-spacing:0.6px}
   .nav a{color:rgba(220,235,255,0.85);text-decoration:none;padding:6px 4px;font-size:14px}
   .nav a.active::after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:10px}
 
-  /* Background layers & paint filter applied */
+  /* background layers */
   #sunset{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
   .sunset-layer{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:160%;border-radius:40% 40% 0 0;opacity:0.94;mix-blend-mode:screen;will-change:transform,opacity}
   .l1{height:52%;background:linear-gradient(180deg,var(--layer1),rgba(2,18,30,0.9));filter:url(#paintBrush) blur(22px) saturate(120%);opacity:0.96}
@@ -47,15 +48,9 @@
 
   .twinkle{position:absolute;left:30%;top:46%;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle, rgba(155,200,255,0.06) 0%, rgba(0,0,0,0) 40%);filter:blur(8px);opacity:0.65}
 
-  /* Content and signature */
+  /* content */
   .content{position:relative;z-index:210;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding-top:80px;box-sizing:border-box;text-align:center}
-  .signature{
-    font-family:'Pacifico','Segoe Script','Brush Script MT',cursive;
-    font-size:138px;line-height:0.7;color:rgba(230,245,255,0.98);
-    text-shadow:0 6px 28px rgba(90,140,200,0.12),0 0 36px rgba(150,220,255,0.12);
-    filter:blur(0.6px) drop-shadow(0 30px 40px rgba(20,40,80,0.6));
-    pointer-events:none; transition:transform 0.45s cubic-bezier(.22,.9,.35,1);
-  }
+  .signature{font-family:'Pacifico','Segoe Script','Brush Script MT',cursive;font-size:138px;line-height:0.7;color:rgba(230,245,255,0.98);text-shadow:0 6px 28px rgba(90,140,200,0.12),0 0 36px rgba(150,220,255,0.12);filter:blur(0.6px) drop-shadow(0 30px 40px rgba(20,40,80,0.6));pointer-events:none;transition:transform 0.45s cubic-bezier(.22,.9,.35,1)}
   .wip{display:inline-block;margin-left:10px;font-size:20px;color:rgba(180,200,220,0.7);vertical-align:middle;font-weight:700;transform:translateY(-8px)}
   .subtitle{margin-top:18px;color:var(--muted);font-weight:700;letter-spacing:0.6px}
   .muted-desc{color:rgba(170,180,195,0.6);margin-top:8px}
@@ -64,15 +59,15 @@
 
   .haze{position:fixed;left:0;right:0;bottom:-8vh;height:22vh;z-index:160;background:linear-gradient(180deg, rgba(9,14,26,0) 0%, rgba(10,18,35,0.72) 40%, rgba(20,28,54,1) 100%);filter:blur(18px) saturate(100%);pointer-events:none}
 
-  /* Cursor - note initial placement is set/updated by JS */
-  #cursor{position:fixed;z-index:99999;left:50%;top:50%;width:160px;height:160px;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(1);background:radial-gradient(circle at 40% 35%, rgba(156,231,255,0.34) 0%, rgba(106,168,255,0.12) 22%, rgba(10,40,80,0.02) 48%, rgba(0,0,0,0) 100%);filter:blur(18px) saturate(140%);box-shadow:0 0 140px rgba(80,160,255,0.18);mix-blend-mode:screen;transition:opacity 0.18s linear}
-  #cursor-core{position:fixed;z-index:100000;left:50%;top:50%;width:18px;height:18px;border-radius:50%;pointer-events:none;background:rgba(255,255,255,0.98);box-shadow:0 0 22px rgba(170,230,255,0.95),0 0 60px rgba(0,170,255,0.28);transform:translate(-50%,-50%) scale(1);transition:opacity 0.12s linear, transform 0.04s linear}
+  /* custom cursor visual (pointer-events:none so it doesn't block real pointer) */
+  #cursor{position:fixed;z-index:99999;left:50%;top:50%;width:220px;height:220px;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(1);background:radial-gradient(circle at 40% 35%, rgba(156,231,255,0.34) 0%, rgba(106,168,255,0.12) 22%, rgba(10,40,80,0.02) 48%, rgba(0,0,0,0) 100%);filter:blur(18px) saturate(140%);box-shadow:0 0 180px rgba(80,160,255,0.18);mix-blend-mode:screen;transition:opacity 0.18s linear}
+  #cursor-core{position:fixed;z-index:100000;left:50%;top:50%;width:22px;height:22px;border-radius:50%;pointer-events:none;background:rgba(255,255,255,0.98);box-shadow:0 0 28px rgba(170,230,255,0.95),0 0 80px rgba(0,170,255,0.28);transform:translate(-50%,-50%) scale(1);transition:opacity 0.12s linear, transform 0.04s linear}
 
   .cursor-hover #cursor{background:radial-gradient(circle at 40% 35%, rgba(255,230,180,0.26) 0%, rgba(255,180,100,0.12) 22%, rgba(60,30,10,0.02) 48%, rgba(0,0,0,0) 100%);box-shadow:0 0 140px rgba(255,170,90,0.12)}
   .cursor-hover #cursor-core{background:rgba(255,240,220,0.98);box-shadow:0 0 30px rgba(255,190,90,0.95),0 0 80px rgba(255,140,40,0.28)}
 
   @media (max-width:820px){.signature{font-size:84px}.nav{top:12px}.arc.a1{width:200vmin}}
-  @media (max-width:520px){.signature{font-size:64px}.nav{gap:12px;font-size:13px}}
+  @media (max-width:520px){.signature{font-size:64px}.nav{gap:12px;font-size:13px} #cursor{width:140px;height:140px} #cursor-core{width:16px;height:16px}}
   @media (prefers-reduced-motion:reduce){.l1,.l2,.l3,.l4,.sun,.arc{animation:none}#cursor{transition:none}}
 </style>
 </head>
@@ -87,14 +82,12 @@
   </filter>
 </defs></svg>
 
-<!-- Top nav -->
 <nav class="nav" aria-label="Primary">
   <a href="#" class="active">Home</a>
   <a href="#projects">Projects</a>
   <a href="#contact">Contact</a>
 </nav>
 
-<!-- background -->
 <div id="sunset" aria-hidden="true">
   <div class="sunset-layer l1"></div>
   <div class="sunset-layer l2"></div>
@@ -110,7 +103,6 @@
   <div class="twinkle" style="left:62%;top:56%;width:28px;height:28px;opacity:0.45"></div>
 </div>
 
-<!-- main content -->
 <main class="content" role="main" aria-live="polite">
   <div style="display:flex;align-items:center;gap:8px;">
     <div class="signature" id="signature">lwcus</div>
@@ -125,16 +117,15 @@
 
 <div class="haze"></div>
 
-<!-- cursor elements -->
+<!-- visual cursor elements (pointer-events:none so they don't block real pointer) -->
 <div id="cursor" aria-hidden="true"></div>
 <div id="cursor-core" aria-hidden="true"></div>
 
 <script>
-/* -------------------------
-   Smooth (lerp) cursor + parallax
-   No bounce: uses exponential smoothing (no velocity springs)
-   Smoothing increases with mouse speed (feels like accelerating)
-   ------------------------- */
+/* Smooth lerp cursor (no bounce) + background parallax.
+   Cursor visual is independent of real pointer (real pointer still controls clicks).
+   Positioning uses left/top + translate(-50%,-50%) to avoid layout/interaction quirks.
+*/
 
 const cursor = document.getElementById('cursor');
 const core = document.getElementById('cursor-core');
@@ -149,87 +140,81 @@ const layerEls = [document.querySelector('.l1'), document.querySelector('.l2'), 
 const layerState = layerEls.map(()=>({tx:0,ty:0}));
 const arcs = document.querySelectorAll('.arc');
 
-// Initialize cursor centered and visible
 function initCursor(){
-  mouseX = window.innerWidth/2;
-  mouseY = window.innerHeight/2;
-  outerX = coreX = mouseX; outerY = coreY = mouseY;
+  mouseX = outerX = coreX = window.innerWidth/2;
+  mouseY = outerY = coreY = window.innerHeight/2;
   cursor.style.left = outerX + 'px'; cursor.style.top = outerY + 'px';
   core.style.left = coreX + 'px'; core.style.top = coreY + 'px';
   cursor.style.display = core.style.display = 'block';
 }
 initCursor();
 
-// Pointer handlers (pointermove is preferred)
+// pointer events
 window.addEventListener('pointermove', e => {
-  if (e.isPrimary !== false) { mouseX = e.clientX; mouseY = e.clientY; cursor.style.opacity = '1'; core.style.opacity = '1'; }
+  if (e.isPrimary !== false) { mouseX = e.clientX; mouseY = e.clientY; cursor.style.opacity='1'; core.style.opacity='1'; }
 });
 window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-window.addEventListener('touchmove', ev => { if(ev.touches && ev.touches[0]){ mouseX = ev.touches[0].clientX; mouseY = ev.touches[0].clientY; } }, {passive:true});
+window.addEventListener('touchmove', ev => { if (ev.touches && ev.touches[0]){ mouseX = ev.touches[0].clientX; mouseY = ev.touches[0].clientY; } }, {passive:true});
 
-// hide/show on leave/enter
+// hide/show when leaving window
 window.addEventListener('mouseleave', ()=>{ cursor.style.opacity='0'; core.style.opacity='0'; });
 window.addEventListener('mouseenter', ()=>{ cursor.style.opacity='1'; core.style.opacity='1'; initCursor(); });
 
-// utility: linear interpolation
+// simple lerp
 function lerp(a,b,t){ return a + (b - a) * t; }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
 function frame(){
   const now = performance.now();
-  const dt = Math.max(8, Math.min(40, now - lastTime)); // ms between frames (clamped)
+  const dt = Math.max(8, Math.min(40, now - lastTime)); // ms, clamped
   const dx = mouseX - lastMouseX, dy = mouseY - lastMouseY;
   const dist = Math.hypot(dx,dy);
-  // approximate px/s
   const speed = (dist / (dt || 16)) * 1000;
-  // speedFactor 0..1 (tweak denominator to change sensitivity)
   const speedFactor = clamp(speed / 1600, 0, 1);
 
-  // smoothing ranges: lower => more lag; higher => faster catch-up
-  // outer halo smoothing: more lag at rest, quicker when moving (feels like accelerating)
-  const outerSmoothing = lerp(0.04, 0.30, speedFactor); // 0.04 = slow/carry, 0.30 = fast catch
-  // core smoother (follows tighter) but still lerp-based (no bounce)
-  const coreSmoothing = lerp(0.08, 0.46, speedFactor);
+  // smoothing ranges
+  const outerSmoothing = lerp(0.04, 0.30, speedFactor); // halo
+  const coreSmoothing = lerp(0.08, 0.46, speedFactor);  // core
 
-  // update positions (no velocities, pure lerp)
+  // update logical positions using lerp (no velocities => no bounce)
   outerX = lerp(outerX, mouseX, outerSmoothing);
   outerY = lerp(outerY, mouseY, outerSmoothing);
   coreX  = lerp(coreX,  mouseX, coreSmoothing);
   coreY  = lerp(coreY,  mouseY, coreSmoothing);
 
-  // visual scales — correlate to how far the halo is from core to give sense of momentum
+  // scale based on halo/core gap
   const haloGap = Math.hypot(outerX - coreX, outerY - coreY);
-  const outerScale = 1 + clamp(haloGap * 0.006, 0, 1.1);
+  const outerScale = 1 + clamp(haloGap * 0.0055, 0, 1.1);
   const coreScale = lerp(0.96, 1.02, 1 - clamp(haloGap * 0.003, 0, 1));
 
-  // apply to DOM (translate3d for GPU)
-  cursor.style.transform = `translate3d(${outerX - window.scrollX}px, ${outerY - window.scrollY}px, 0) translate(-50%,-50%) scale(${outerScale})`;
-  // the above includes a translate3d offset then extra translate to center — consistent cross-browser
-  core.style.transform = `translate3d(${coreX - window.scrollX}px, ${coreY - window.scrollY}px, 0) translate(-50%,-50%) scale(${coreScale})`;
+  // set positions using left/top + translate(-50%,-50%) so the browser always uses pointer coords for hits
+  cursor.style.left = outerX + 'px';
+  cursor.style.top  = outerY + 'px';
+  cursor.style.transform = `translate(-50%,-50%) scale(${outerScale})`;
 
-  // Parallax: use lerp for each layer target
-  const nx = (mouseX / window.innerWidth - 0.5) * 2; // -1..1
+  core.style.left = coreX + 'px';
+  core.style.top  = coreY + 'px';
+  core.style.transform = `translate(-50%,-50%) scale(${coreScale})`;
+
+  // parallax
+  const nx = (mouseX / window.innerWidth - 0.5) * 2;
   const ny = (mouseY / window.innerHeight - 0.5) * 2;
-  layerEls.forEach((el, i) => {
+  layerEls.forEach((el,i) => {
     if(!el) return;
     const baseAmt = [6,9,12,18,8][i];
     const targetTx = nx * baseAmt * (1 + speedFactor * 0.9);
     const targetTy = ny * (baseAmt * 0.06) * (1 + speedFactor * 0.6);
-    // layer smoothing: slower than cursor for depth (more lag)
-    const layerLerp = lerp(0.04, 0.14, speedFactor); // small => heavy lag
+    const layerLerp = lerp(0.04, 0.14, speedFactor);
     layerState[i].tx = lerp(layerState[i].tx, targetTx, layerLerp);
     layerState[i].ty = lerp(layerState[i].ty, targetTy, layerLerp);
     el.style.transform = `translate3d(calc(-50% + ${layerState[i].tx}px), ${layerState[i].ty}px, 0)`;
   });
 
-  // arcs glide too
+  // arcs glide
   arcs.forEach((a, i) => {
     const amp = (i + 1) * 3.2 * (1 + speedFactor * 0.9);
-    const tx = nx * amp;
-    const ty = ny * amp * 0.08;
-    // small smoothing
+    const tx = nx * amp; const ty = ny * amp * 0.08;
     const arcLerp = lerp(0.03, 0.12, speedFactor);
-    // we store transforms on dataset to avoid extra arrays
     const prevTx = parseFloat(a.dataset.tx || 0);
     const prevTy = parseFloat(a.dataset.ty || 0);
     const newTx = lerp(prevTx, tx, arcLerp);
@@ -239,27 +224,26 @@ function frame(){
     a.style.opacity = (0.04 + Math.abs(nx) * 0.06 + speedFactor * 0.02).toFixed(3);
   });
 
-  // signature gentle nudge
+  // signature nudge
   const sigAmp = lerp(4, 20, speedFactor);
-  signature.style.transform = `translate3d(${nx * sigAmp}px, ${ny * (sigAmp * 0.06)}px, 0) scale(${1 + speedFactor * 0.02})`;
+  if (signature) signature.style.transform = `translate3d(${nx * sigAmp}px, ${ny * (sigAmp * 0.06)}px, 0) scale(${1 + speedFactor * 0.02})`;
 
   lastMouseX = mouseX; lastMouseY = mouseY; lastTime = now;
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
-// Click feedback using scales but no bounce
+// click feedback (temporary scale, no bounce)
 window.addEventListener('pointerdown', ()=> {
   core.style.transition = 'transform 0.08s linear';
   core.style.transform += ' scale(0.82)';
 });
 window.addEventListener('pointerup', ()=> {
   core.style.transition = 'transform 0.18s cubic-bezier(.2,.9,.3,1)';
-  // restore next frame to allow clean transform (we later keep lerp overriding transform — the small transition is visual)
   setTimeout(()=> { core.style.transition = ''; }, 220);
 });
 
-// interactive hover states (links, buttons)
+// hover styles for interactive elements
 function bindInteractiveHover(){
   const nodes = document.querySelectorAll('a, button, input, [role="button"], .nav a');
   nodes.forEach(n=>{
@@ -269,11 +253,8 @@ function bindInteractiveHover(){
 }
 bindInteractiveHover();
 
-// responsive cursor size
-function handleResize(){
-  if(window.innerWidth < 520){ cursor.style.width='110px'; cursor.style.height='110px'; }
-  else { cursor.style.width='160px'; cursor.style.height='160px'; }
-}
+// responsive sizing
+function handleResize(){ if(window.innerWidth < 520){ cursor.style.width='140px'; cursor.style.height='140px'; core.style.width='16px'; core.style.height='16px'; } else { cursor.style.width='220px'; cursor.style.height='220px'; core.style.width='22px'; core.style.height='22px'; } }
 window.addEventListener('resize', handleResize);
 handleResize();
 </script>
