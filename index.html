@@ -3,10 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>there's this boy, "lwcus"...</title>
-<!-- Add Google Fonts for signature -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Parisienne&display=swap" rel="stylesheet">
+<title>lwcus | UI/UX Designer & Programmer</title>
 <style>
+  @font-face {
+    font-family: 'SignatureFont';
+    src: url('https://files.catbox.moe/1xbgkx.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   :root{
     --bg-deep:#071125;
     --layer1:#081026; --layer2:#08243a; --layer3:#0a4768; --layer4:#0b6b9a;
@@ -34,6 +39,7 @@
     color: rgba(170, 180, 195, 0.7);
     font-size: 14px;
     font-weight: 500;
+    text-transform: lowercase;
   }
   .contact-header a {
     color: var(--muted);
@@ -42,6 +48,7 @@
   }
   .contact-header a:hover {
     color: var(--accent);
+    text-shadow: 0 0 8px rgba(155, 231, 255, 0.5);
   }
 
   /* background layers */
@@ -62,16 +69,55 @@
 
   /* content */
   .content{position:relative;z-index:210;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding-top:80px;box-sizing:border-box;text-align:center}
-  .signature{font-family:'Dancing Script', 'Parisienne', 'Pacifico', 'Segoe Script', cursive;font-size:138px;line-height:0.7;color:rgba(230,245,255,0.98);text-shadow:0 6px 28px rgba(90,140,200,0.12),0 0 36px rgba(150,220,255,0.12);filter:blur(0.6px) drop-shadow(0 30px 40px rgba(20,40,80,0.6));pointer-events:none;transition:transform 0.45s cubic-bezier(.22,.9,.35,1)}
+  .signature{font-family:'SignatureFont', 'Dancing Script', 'Pacifico', cursive;font-size:138px;line-height:0.7;color:rgba(230,245,255,0.98);text-shadow:0 6px 28px rgba(90,140,200,0.12),0 0 36px rgba(150,220,255,0.12);filter:blur(0.6px) drop-shadow(0 30px 40px rgba(20,40,80,0.6));pointer-events:none;transition:transform 0.45s cubic-bezier(.22,.9,.35,1)}
   .wip{display:inline-block;margin-left:10px;font-size:20px;color:rgba(180,200,220,0.7);vertical-align:middle;font-weight:700;transform:translateY(-8px)}
-  .subtitle{margin-top:18px;color:var(--muted);font-weight:700;letter-spacing:0.6px}
-  .muted-desc{color:rgba(170,180,195,0.6);margin-top:8px}
+  
+  /* Updated text styles with gradient and glow */
+  .subtitle{
+    margin-top:18px;
+    font-weight:700;
+    letter-spacing:0.6px;
+    text-transform: lowercase;
+    background: linear-gradient(to right, #ffffff, #9be7ff, #6aa8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 15px rgba(155, 231, 255, 0.7),
+                 0 0 30px rgba(155, 231, 255, 0.5),
+                 0 0 45px rgba(155, 231, 255, 0.3);
+    animation: glow-pulse 3s ease-in-out infinite alternate;
+  }
+  
+  .muted-desc{
+    margin-top:8px;
+    text-transform: lowercase;
+    background: linear-gradient(to right, #eaf6ff, #9be7ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(155, 231, 255, 0.5),
+                 0 0 20px rgba(155, 231, 255, 0.3);
+    animation: glow-pulse 4s ease-in-out infinite alternate;
+  }
+  
+  @keyframes glow-pulse {
+    from {
+      text-shadow: 0 0 15px rgba(155, 231, 255, 0.7),
+                   0 0 30px rgba(155, 231, 255, 0.5),
+                   0 0 45px rgba(155, 231, 255, 0.3);
+    }
+    to {
+      text-shadow: 0 0 20px rgba(155, 231, 255, 0.8),
+                   0 0 40px rgba(155, 231, 255, 0.6),
+                   0 0 60px rgba(155, 231, 255, 0.4);
+    }
+  }
 
   /* socials: only one discord button now */
   .socials{display:flex;gap:12px;align-items:center;margin-top:18px;opacity:0.98}
   .discord-btn{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:rgba(230,245,255,0.95);text-decoration:none;font-weight:700;backdrop-filter: blur(6px);box-shadow:0 6px 18px rgba(0,0,0,0.45)}
   .discord-btn img{width:28px;height:28px;object-fit:contain;border-radius:6px}
-  .discord-label{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+  .discord-label{display:flex;flex-direction:column;align-items:flex-start;line-height:1;text-transform: lowercase;}
   .discord-label .name{font-size:14px}
   .discord-label .handle{font-size:12px;color:rgba(170,190,210,0.75);margin-top:2px}
 
@@ -83,7 +129,7 @@
 
   @media (max-width:820px){.signature{font-size:84px}.contact-header{top:12px}.arc.a1{width:200vmin}}
   @media (max-width:520px){.signature{font-size:64px}.contact-header{font-size:12px} #cursor{width:200px;height:200px} #cursor-core{width:24px;height:24px}}
-  @media (prefers-reduced-motion:reduce){.l1,.l2,.l3,.l4,.sun,.arc{animation:none}#cursor{transition:none}}
+  @media (prefers-reduced-motion:reduce){.l1,.l2,.l3,.l4,.sun,.arc{animation:none}#cursor{transition:none} .subtitle, .muted-desc {animation: none;}}
 </style>
 </head>
 <body>
@@ -121,10 +167,10 @@
 <main class="content" role="main" aria-live="polite">
   <div style="display:flex;align-items:center;gap:8px;">
     <div class="signature" id="signature">lwcus</div>
-    <div class="wip">(WIP)</div>
+    <div class="wip">(wip)</div>
   </div>
-  <div class="subtitle">Hey, I'm lwcus!</div>
-  <div class="muted-desc">I'm a UI/UX designer and programmer.</div>
+  <div class="subtitle">hey, i'm lwcus!</div>
+  <div class="muted-desc">i'm a ui/ux designer and programmer.</div>
 
   <!-- single discord button (kept accessible) -->
   <div class="socials" aria-hidden="false">
