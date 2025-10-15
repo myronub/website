@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Deserted</title>
+  <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/yzh8uy.jpg">
   <style>
     body {
       margin: 0;
       background-color: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
       cursor: pointer;
+      position: relative;
     }
 
     img {
-      max-width: 100%;
-      max-height: 100%;
+      height: 90vh;
       object-fit: contain;
-      position: absolute;
+      position: relative;
+      left: 5vw;
       z-index: 1;
     }
 
     #text {
       position: absolute;
+      right: 10vw;
       color: white;
       font-family: 'Courier New', monospace;
       font-size: 3rem;
@@ -33,6 +36,20 @@
       white-space: pre;
       opacity: 0;
       animation: fadeIn 1s ease forwards;
+    }
+
+    /* Subtle TV noise overlay */
+    #noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+      background-size: cover;
+      opacity: 0.07; /* very subtle */
+      pointer-events: none;
+      z-index: 0;
     }
 
     @keyframes shake {
@@ -50,6 +67,7 @@
   </style>
 </head>
 <body>
+  <div id="noise"></div>
   <img id="mainImage" src="https://files.catbox.moe/hc5qbv.png" alt="Deserted image">
   <div id="text"></div>
 
@@ -61,14 +79,17 @@
     const message = "deserted";
     let clicked = false;
 
+    // Lower the volume
+    audio.volume = 0.3;
+
     document.body.addEventListener('click', () => {
       if (clicked) return;
       clicked = true;
 
-      // Start audio
+      // Play the audio
       audio.play();
 
-      // Start typewriting
+      // Start typing effect
       textEl.style.opacity = 1;
       let i = 0;
       function typeWriter() {
@@ -76,9 +97,9 @@
           textEl.textContent += message.charAt(i);
           textEl.style.animation = 'shake 0.2s infinite';
           i++;
-          setTimeout(typeWriter, 300 + Math.random() * 300); // slow, uneven typing
+          setTimeout(typeWriter, 300 + Math.random() * 300); // uneven typing speed
         } else {
-          textEl.style.animation = 'shake 0.5s infinite'; // keep shaking
+          textEl.style.animation = 'shake 0.5s infinite';
         }
       }
       typeWriter();
