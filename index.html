@@ -38,7 +38,7 @@
       animation: fadeIn 1s ease forwards;
     }
 
-    /* Subtle TV noise overlay */
+    /* Subtle static TV noise overlay over everything */
     #noise {
       position: fixed;
       top: 0;
@@ -47,9 +47,10 @@
       height: 100%;
       background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
       background-size: cover;
-      opacity: 0.07; /* very subtle */
+      opacity: 0.05; /* very subtle — almost imperceptible */
       pointer-events: none;
-      z-index: 0;
+      z-index: 3; /* above everything */
+      mix-blend-mode: overlay; /* soft grain effect */
     }
 
     @keyframes shake {
@@ -67,11 +68,11 @@
   </style>
 </head>
 <body>
-  <div id="noise"></div>
   <img id="mainImage" src="https://files.catbox.moe/hc5qbv.png" alt="Deserted image">
   <div id="text"></div>
+  <div id="noise"></div>
 
-  <audio id="audio" src="https://files.catbox.moe/goqtpm.mp3"></audio>
+  <audio id="audio" src="https://files.catbox.moe/goqtpm.mp3" loop></audio>
 
   <script>
     const textEl = document.getElementById('text');
@@ -86,7 +87,7 @@
       if (clicked) return;
       clicked = true;
 
-      // Play the audio
+      // Play the audio (loops automatically)
       audio.play();
 
       // Start typing effect
