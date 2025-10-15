@@ -5,6 +5,8 @@
   <title>Deserted</title>
   <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/yzh8uy.jpg">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+
     body {
       margin: 0;
       background-color: black;
@@ -27,18 +29,29 @@
 
     #text {
       position: absolute;
-      right: 10vw;
+      right: 0;
+      top: 0;
+      width: 50vw;
+      height: 100vh;
       color: white;
-      font-family: 'Courier New', monospace;
-      font-size: 3rem;
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 2.5rem;
+      line-height: 1.2em;
+      white-space: pre-wrap;
+      overflow: hidden;
+      padding: 2vw;
       z-index: 2;
-      white-space: pre;
       opacity: 0;
       animation: fadeIn 1s ease forwards;
     }
 
-    /* Subtle static TV noise overlay over everything */
+    /* Each character will shake individually */
+    .char {
+      display: inline-block;
+      animation: shake 0.3s infinite ease-in-out;
+    }
+
+    /* TV noise overlay */
     #noise {
       position: fixed;
       top: 0;
@@ -47,18 +60,18 @@
       height: 100%;
       background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
       background-size: cover;
-      opacity: 0.05; /* very subtle */
+      opacity: 0.05; /* barely visible */
       pointer-events: none;
-      z-index: 3; /* above everything */
-      mix-blend-mode: overlay; /* soft film grain */
+      z-index: 3;
+      mix-blend-mode: overlay;
     }
 
     @keyframes shake {
       0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-2px, 1px); }
-      40% { transform: translate(2px, -1px); }
-      60% { transform: translate(-1px, 2px); }
-      80% { transform: translate(1px, -2px); }
+      20% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, -1px); }
+      60% { transform: translate(-1px, 0); }
+      80% { transform: translate(1px, 1px); }
     }
 
     @keyframes fadeIn {
@@ -77,43 +90,44 @@
   <script>
     const textEl = document.getElementById('text');
     const audio = document.getElementById('audio');
-    const message = "deserted";
+    const message = "deserted "; // space included so it repeats smoothly
     let clicked = false;
-
-    // Lower the volume
     audio.volume = 0.3;
 
     document.body.addEventListener('click', () => {
       if (clicked) return;
       clicked = true;
-
-      // Play audio (loops automatically)
       audio.play();
-
-      // Show and animate text
       textEl.style.opacity = 1;
+      startTyping();
+    });
 
-      function typeWriterLoop() {
-        textEl.textContent = "";
-        let i = 0;
+    function startTyping() {
+      let i = 0;
 
-        function typeNextChar() {
-          if (i < message.length) {
-            textEl.textContent += message.charAt(i);
-            textEl.style.animation = 'shake 0.2s infinite';
-            i++;
-            setTimeout(typeNextChar, 300 + Math.random() * 300);
-          } else {
-            textEl.style.animation = 'shake 0.5s infinite';
-            // Wait before restarting
-            setTimeout(typeWriterLoop, 2000); // pause before retyping
-          }
+      function typeNextChar() {
+        // Add next letter span
+        const char = message[i % message.length];
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.classList.add('char');
+        // Add random delay offset to desync shakes a little
+        span.style.animationDelay = `${Math.random() * 0.3}s`;
+        textEl.appendChild(span);
+
+        i++;
+
+        // If right half is full, stop typing (overflow hidden keeps it neat)
+        if (textEl.scrollHeight > textEl.clientHeight * 1.1) {
+          // optional: stop when full
+          return;
         }
-        typeNextChar();
+
+        setTimeout(typeNextChar, 100 + Math.random() * 150);
       }
 
-      typeWriterLoop();
-    });
+      typeNextChar();
+    }
   </script>
 </body>
 </html>
