@@ -1,143 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Deserted</title>
-  <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/yzh8uy.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>minu</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Reenie+Beanie&family=Shadows+Into+Light&family=Patrick+Hand&display=swap');
+    /* === BASE === */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --accent: #ff3b3b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none; /* hide default cursor */
+    }
 
     body {
-      margin: 0;
-      background-color: black;
       height: 100vh;
-      overflow: hidden;
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      cursor: pointer;
-      position: relative;
-    }
-
-    img {
-      height: 90vh;
-      object-fit: contain;
-      position: relative;
-      left: 5vw;
-      z-index: 1;
-    }
-
-    #text {
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 50vw;
-      height: 100vh;
-      color: white;
-      font-size: 2.5rem;
-      line-height: 1.2em;
-      white-space: pre-wrap;
+      justify-content: center;
       overflow: hidden;
-      padding: 2vw;
-      z-index: 2;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
+      position: relative;
     }
 
-    /* Each character individually animated */
-    .char {
-      display: inline-block;
-      animation: shake 0.7s infinite ease-in-out;
-      transform-origin: center;
-      vertical-align: middle;
-    }
-
-    /* TV noise overlay */
-    #noise {
+    /* === COOL CURSOR === */
+    .cursor {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
-      background-size: cover;
-      opacity: 0.05;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
       pointer-events: none;
-      z-index: 3;
-      mix-blend-mode: overlay;
+      transition: transform 0.1s ease-out, width 0.2s, height 0.2s, background 0.2s;
+      z-index: 999;
     }
 
-    @keyframes shake {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      20% { transform: translate(-1px, 1px) rotate(-0.5deg); }
-      40% { transform: translate(1px, -1px) rotate(0.5deg); }
-      60% { transform: translate(-1px, 0) rotate(-0.3deg); }
-      80% { transform: translate(1px, 1px) rotate(0.4deg); }
+    a:hover ~ .cursor,
+    .hoverable:hover ~ .cursor {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 59, 59, 0.1);
+    }
+
+    /* === MAIN CONTENT === */
+    .container {
+      text-align: center;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    .name {
+      font-size: 4rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: lowercase;
+      animation: glow 3s infinite alternate;
+    }
+
+    .desc {
+      font-size: 1.3rem;
+      margin-top: 10px;
+      opacity: 0.85;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff3b3b; }
+      to { text-shadow: 0 0 25px #ff3b3b, 0 0 50px #ff3b3b; }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === NORWEGIAN HOVER EFFECT === */
+    .norwegian {
+      position: relative;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(90deg, #ffffff, #ba0c2f, #00205b);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      background-size: 300%;
+      animation: norwayGradient 3s infinite alternate;
+    }
+
+    @keyframes norwayGradient {
+      from { background-position: 0%; }
+      to { background-position: 100%; }
+    }
+
+    .flag {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      width: 60px;
+      height: 40px;
+      background: linear-gradient(90deg, #ba0c2f 35%, #fff 35%, #fff 45%, #00205b 45%, #00205b 55%, #fff 55%, #fff 65%, #ba0c2f 65%);
+      border: 2px solid #fff;
+      border-radius: 4px;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .norwegian:hover .flag {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* === DISCORD LINK === */
+    .link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--accent);
+      padding: 8px 16px;
+      border-radius: 10px;
+      transition: all 0.3s;
+      opacity: 0.8;
+    }
+
+    .link:hover {
+      opacity: 1;
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* === PARTICLE FX (background dots) === */
+    .dot {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-100vh); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <img id="mainImage" src="https://files.catbox.moe/hc5qbv.png" alt="Deserted image">
-  <div id="text"></div>
-  <div id="noise"></div>
+  <div class="container">
+    <div class="name">minu</div>
+    <div class="desc">15 y/o <span class="norwegian">norwegian
+      <span class="flag"></span>
+    </span> coder & cool guy</div>
+    <a href="https://myronub.vercel.app/d" class="link hoverable">discord</a>
+  </div>
 
-  <audio id="audio" src="https://files.catbox.moe/goqtpm.mp3" loop></audio>
+  <div class="cursor"></div>
 
   <script>
-    const textEl = document.getElementById('text');
-    const audio = document.getElementById('audio');
-    const message = "candyflipping once a month when the suns down got a couple plays but i cant make my mom proud maybe moms proud i cant tell cuz the self doubt tried to hit her up but i can’t when im strung out maybe ill be fine hit her up in the morning morning never comes i was thinking bout touring i cant sober up cuz my mind would be boring know i talk a lot but maybe you should support me why do all my friends always choose to ignore me calling every day but no one ever gets it say i wanna die but im already finished why i wake up i dont what else to do its like nothing ever matters and i wanna text you and i wanna feel you but i cant through a phone, its like usually the distance makes me feel much more alone and i wish that i could walk myself from here right to your home and i wish i had the money just to fly you to my shows but im too broke "; // space so it loops nicely
-    const fonts = [
-      "'Nanum Pen Script', cursive",
-      "'Reenie Beanie', cursive",
-      "'Shadows Into Light', cursive",
-      "'Patrick Hand', cursive"
-    ];
-    let clicked = false;
-    audio.volume = 0.3;
-
-    document.body.addEventListener('click', () => {
-      if (clicked) return;
-      clicked = true;
-      audio.play();
-      textEl.style.opacity = 1;
-      startTyping();
+    /* === COOL CURSOR === */
+    const cursor = document.querySelector('.cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.pageX + 'px';
+      cursor.style.top = e.pageY + 'px';
     });
 
-    function startTyping() {
-      let i = 0;
-
-      function typeNextChar() {
-        const char = message[i % message.length];
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.classList.add('char');
-
-        // random font
-        const randomFont = fonts[Math.floor(Math.random() * fonts.length)];
-        span.style.fontFamily = randomFont;
-
-        // slight random rotation and size
-        span.style.transform = `rotate(${(Math.random() - 0.5) * 6}deg) scale(${1 + (Math.random() - 0.5) * 0.1})`;
-        span.style.animationDelay = `${Math.random() * 0.3}s`;
-
-        textEl.appendChild(span);
-        i++;
-
-        // stop when full (optional)
-        if (textEl.scrollHeight > textEl.clientHeight * 1.1) {
-          return;
-        }
-
-        setTimeout(typeNextChar, 100 + Math.random() * 150);
-      }
-
-      typeNextChar();
+    /* === PARTICLES === */
+    const body = document.body;
+    for (let i = 0; i < 30; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      dot.style.left = Math.random() * 100 + 'vw';
+      dot.style.top = Math.random() * 100 + 'vh';
+      dot.style.animationDuration = 5 + Math.random() * 10 + 's';
+      dot.style.animationDelay = Math.random() * 5 + 's';
+      body.appendChild(dot);
     }
   </script>
 </body>
